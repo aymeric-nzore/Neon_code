@@ -1,0 +1,30 @@
+# Image Python officielle légère
+FROM python:3.12-slim
+
+# Empêche Python de générer .pyc
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Dossier de travail
+WORKDIR /app
+
+# Installer dépendances système minimales
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Installer uv (gestionnaire moderne)
+RUN pip install --no-cache-dir uv
+
+# Copier fichiers projet
+COPY . .
+
+# Installer dépendances via uv
+RUN uv pip install --system fastapi uvicorn httpx python-dotenv
+
+# Exposer le port FastAPI
+EXPOSE 8000
+
+# Commande de lancement
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
