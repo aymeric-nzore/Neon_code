@@ -1,0 +1,25 @@
+# Env files
+.env
+
+# Virtual env
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# Tests
+tests/
+
+# Local files
+*.log
+README.md
