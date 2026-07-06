@@ -8,3 +8,5 @@
 # Virtual env
 .venv/
 venv/
+
+cacao-ai/

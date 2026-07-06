@@ -1,0 +1,1 @@
+{"features": ["temperature_air", "humidity_air", "rainfall", "light_intensity", "soil_moisture", "soil_ph"], "targets": ["risk_today", "risk_7d", "risk_14d", "risk_21d"], "input_size": 6, "sequence_length": 7}

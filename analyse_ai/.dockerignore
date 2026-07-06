@@ -1,0 +1,35 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Env
+.env
+.venv/
+venv/
+
+# Git
+.git/
+.gitignore
+
+# Tests
+tests/
+
+# Local data (CRITICAL pour ton projet IA)
+dataset/
+data/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Model training artifacts inutiles
+*.pt.tmp
+*.ckpt

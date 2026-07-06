@@ -1,0 +1,63 @@
+### HEALTH CHECK
+GET http://127.0.0.1:8000/
+
+###
+
+### PREDICTION RISQUE CACAO
+POST http://127.0.0.1:8000/predict
+Content-Type: application/json
+
+{
+  "temperature_air": 28.5,
+  "humidity_air": 82,
+  "rainfall": 12,
+  "light_intensity": 300,
+  "soil_moisture": 45,
+  "soil_ph": 5.8
+}
+
+###
+
+### CAS RISQUE ÉLEVÉ (test stress)
+POST http://127.0.0.1:8000/predict
+Content-Type: application/json
+
+{
+  "temperature_air": 30.2,
+  "humidity_air": 95,
+  "rainfall": 40,
+  "light_intensity": 150,
+  "soil_moisture": 80,
+  "soil_ph": 4.9
+}
+
+###
+
+### CAS SEC (risque faible)
+POST http://127.0.0.1:8000/predict
+Content-Type: application/json
+
+{
+  "temperature_air": 26.0,
+  "humidity_air": 55,
+  "rainfall": 2,
+  "light_intensity": 500,
+  "soil_moisture": 20,
+  "soil_ph": 6.2
+}
+
+###
+
+POST http://127.0.0.1:8000/predict
+Content-Type: application/json
+
+{
+    "plantation_id": 1,
+    "timestamp": "2026-07-06T18:00:00Z",
+    "temperature_air": 30.2,
+    "humidity_air": 95,
+    "rainfall": 40,
+    "light_intensity": 150,
+    "soil_moisture": 80,
+    "soil_ph": 4.9
+}
