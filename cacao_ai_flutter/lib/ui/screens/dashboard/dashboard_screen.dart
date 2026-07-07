@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import '../../../providers/auth_provider.dart';
 import '../../../providers/dashboard_provider.dart';
 import '../../theme/app_theme.dart';
-import '../auth/login_screen.dart';
 import '../soil/soil_analysis_screen.dart';
 import '../chat/chatbot_screen.dart';
 import '../disease/disease_detection_screen.dart';
@@ -23,7 +22,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    // Load latest data from Supabase/API on startup
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<DashboardProvider>(context, listen: false).fetchLatestFromDatabase();
     });
@@ -74,6 +72,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final String riskLevel = dashboardProvider.latestPrediction?.agent.alert.level ?? 'SAFE';
     final Color riskColor = _getRiskColor(riskLevel);
 
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final bool isLargeScreen = screenWidth > 720;
+    
+    // Dynamic Grid columns based on screen width
+    int crossAxisCount = 2;
+    if (screenWidth > 960) {
+      crossAxisCount = 4;
+    } else if (screenWidth > 600) {
+      crossAxisCount = 3;
+    }
+
     return Scaffold(
       backgroundColor: AppTheme.bgDark,
       appBar: AppBar(
@@ -88,197 +97,209 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ],
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // User info & sync state
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 1080),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  // User info & sync state
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Bonjour, $username !',
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.textLight,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Icon(Icons.sync, size: 14, color: AppTheme.textMuted),
-                          const SizedBox(width: 4),
                           Text(
-                            'Synchro : $lastSync',
-                            style: const TextStyle(fontSize: 12, color: AppTheme.textMuted),
+                            'Bonjour, $username !',
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: AppTheme.textLight,
+                            ),
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  CircleAvatar(
-                    backgroundColor: AppTheme.primaryGreen.withOpacity(0.2),
-                    radius: 24,
-                    child: const Icon(Icons.person, color: AppTheme.primaryGreen),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-
-              // Weather & Risk Section
-              Row(
-                children: [
-                  // Weather Card
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      height: 120,
-                      decoration: BoxDecoration(
-                        color: AppTheme.bgCard,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.white.withOpacity(0.05)),
-                      ),
-                      child: const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
+                          const SizedBox(height: 6),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Icon(Icons.wb_sunny, color: Colors.orange, size: 28),
-                              Text('29°C', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('San Pedro', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                              Text('Humide - 82%', style: TextStyle(color: AppTheme.textMuted, fontSize: 11)),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  
-                  // Risk Level Card
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      height: 120,
-                      decoration: BoxDecoration(
-                        color: AppTheme.bgCard,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.white.withOpacity(0.05)),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Icon(Icons.shield_outlined, color: riskColor, size: 28),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                decoration: BoxDecoration(
-                                  color: riskColor.withOpacity(0.2),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Text(
-                                  _getRiskText(riskLevel),
-                                  style: TextStyle(
-                                    color: riskColor,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                              const Icon(Icons.sync, size: 14, color: AppTheme.textMuted),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Dernière synchro : $lastSync',
+                                style: const TextStyle(fontSize: 12, color: AppTheme.textMuted),
                               ),
                             ],
                           ),
-                          const Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Niveau de Risque', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                              Text('Basé sur les capteurs', style: TextStyle(color: AppTheme.textMuted, fontSize: 11)),
-                            ],
-                          ),
                         ],
                       ),
-                    ),
+                      CircleAvatar(
+                        backgroundColor: AppTheme.primaryGreen.withOpacity(0.15),
+                        radius: 26,
+                        child: const Icon(Icons.person, color: AppTheme.primaryGreen, size: 28),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 28),
+
+                  // Weather & Risk Section (Adaptive Layout)
+                  isLargeScreen 
+                    ? Row(
+                        children: [
+                          Expanded(child: _buildWeatherCard()),
+                          const SizedBox(width: 16),
+                          Expanded(child: _buildRiskCard(riskColor, riskLevel)),
+                        ],
+                      )
+                    : Column(
+                        children: [
+                          _buildWeatherCard(),
+                          const SizedBox(height: 16),
+                          _buildRiskCard(riskColor, riskLevel),
+                        ],
+                      ),
+                  const SizedBox(height: 36),
+
+                  const Text(
+                    'Fonctionnalités',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.textLight),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Features Grid Shortcuts (Dynamic Column Count)
+                  GridView.count(
+                    crossAxisCount: crossAxisCount,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16,
+                    childAspectRatio: isLargeScreen ? 1.25 : 1.1,
+                    children: [
+                      _buildShortcutCard(
+                        context,
+                        title: 'Analyse du sol',
+                        subtitle: 'Humidité & pH',
+                        icon: Icons.analytics_outlined,
+                        color: AppTheme.primaryGreen,
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SoilAnalysisScreen())),
+                      ),
+                      _buildShortcutCard(
+                        context,
+                        title: 'Détection maladie',
+                        subtitle: 'Scan photo IA',
+                        icon: Icons.camera_alt_outlined,
+                        color: Colors.purple,
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DiseaseDetectionScreen())),
+                      ),
+                      _buildShortcutCard(
+                        context,
+                        title: 'Conseils agricoles',
+                        subtitle: 'Astuces du jour',
+                        icon: Icons.lightbulb_outline,
+                        color: Colors.amber,
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const TipsScreen())),
+                      ),
+                      _buildShortcutCard(
+                        context,
+                        title: 'Chatbot IA',
+                        subtitle: 'Conseiller AgriIA',
+                        icon: Icons.chat_bubble_outline,
+                        color: Colors.blue,
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ChatbotScreen())),
+                      ),
+                      _buildShortcutCard(
+                        context,
+                        title: 'Historique',
+                        subtitle: 'Données & scans',
+                        icon: Icons.history,
+                        color: Colors.orange,
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HistoryScreen())),
+                      ),
+                    ],
                   ),
                 ],
               ),
-              const SizedBox(height: 32),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
-              const Text(
-                'Fonctionnalités',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.textLight),
-              ),
-              const SizedBox(height: 16),
+  Widget _buildWeatherCard() {
+    return Container(
+      padding: const EdgeInsets.all(18),
+      height: 120,
+      decoration: BoxDecoration(
+        color: AppTheme.bgCard,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withOpacity(0.04)),
+      ),
+      child: const Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Icon(Icons.wb_sunny, color: Colors.orange, size: 30),
+              Text('29°C', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('San Pedro, Côte d\'Ivoire', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+              Text('Humidité du sol optimale - 82%', style: TextStyle(color: AppTheme.textMuted, fontSize: 11)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
-              // Features Grid Shortcuts
-              GridView.count(
-                crossAxisCount: 2,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-                childAspectRatio: 1.1,
-                children: [
-                  _buildShortcutCard(
-                    context,
-                    title: 'Analyse du sol',
-                    subtitle: 'Humidité & pH',
-                    icon: Icons.analytics_outlined,
-                    color: AppTheme.primaryGreen,
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SoilAnalysisScreen())),
+  Widget _buildRiskCard(Color riskColor, String riskLevel) {
+    return Container(
+      padding: const EdgeInsets.all(18),
+      height: 120,
+      decoration: BoxDecoration(
+        color: AppTheme.bgCard,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withOpacity(0.04)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Icon(Icons.shield_outlined, color: riskColor, size: 30),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: riskColor.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  _getRiskText(riskLevel),
+                  style: TextStyle(
+                    color: riskColor,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
                   ),
-                  _buildShortcutCard(
-                    context,
-                    title: 'Détection maladie',
-                    subtitle: 'Scan photo IA',
-                    icon: Icons.camera_alt_outlined,
-                    color: Colors.purple,
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DiseaseDetectionScreen())),
-                  ),
-                  _buildShortcutCard(
-                    context,
-                    title: 'Conseils agricoles',
-                    subtitle: 'Astuces du jour',
-                    icon: Icons.lightbulb_outline,
-                    color: Colors.amber,
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const TipsScreen())),
-                  ),
-                  _buildShortcutCard(
-                    context,
-                    title: 'Chatbot IA',
-                    subtitle: 'Conseiller AgriIA',
-                    icon: Icons.chat_bubble_outline,
-                    color: Colors.blue,
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ChatbotScreen())),
-                  ),
-                  _buildShortcutCard(
-                    context,
-                    title: 'Historique',
-                    subtitle: 'Données & scans',
-                    icon: Icons.history,
-                    color: Colors.orange,
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HistoryScreen())),
-                  ),
-                ],
+                ),
               ),
             ],
           ),
-        ),
+          const Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Niveau de Risque Global', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+              Text('Calculé via modèles prédictifs LSTM', style: TextStyle(color: AppTheme.textMuted, fontSize: 11)),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -295,7 +316,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
           color: AppTheme.bgCard,
           borderRadius: BorderRadius.circular(16),
@@ -318,7 +339,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 color: color.withOpacity(0.15),
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, color: color, size: 24),
+              child: Icon(icon, color: color, size: 26),
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -331,7 +352,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     color: AppTheme.textLight,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 4),
                 Text(
                   subtitle,
                   style: const TextStyle(
