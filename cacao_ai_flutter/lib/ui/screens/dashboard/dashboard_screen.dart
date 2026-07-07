@@ -106,37 +106,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // User info & sync state
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Text(
+                        'Bonjour, $username !',
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.textLight,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
                         children: [
+                          const Icon(Icons.sync, size: 14, color: AppTheme.textMuted),
+                          const SizedBox(width: 4),
                           Text(
-                            'Bonjour, $username !',
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: AppTheme.textLight,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Row(
-                            children: [
-                              const Icon(Icons.sync, size: 14, color: AppTheme.textMuted),
-                              const SizedBox(width: 4),
-                              Text(
-                                'Dernière synchro : $lastSync',
-                                style: const TextStyle(fontSize: 12, color: AppTheme.textMuted),
-                              ),
-                            ],
+                            'Dernière synchro : $lastSync',
+                            style: const TextStyle(fontSize: 12, color: AppTheme.textMuted),
                           ),
                         ],
-                      ),
-                      CircleAvatar(
-                        backgroundColor: AppTheme.primaryGreen.withOpacity(0.15),
-                        radius: 26,
-                        child: const Icon(Icons.person, color: AppTheme.primaryGreen, size: 28),
                       ),
                     ],
                   ),
