@@ -1,0 +1,22 @@
+# Suivi des tâches — Cacao AI Flutter
+
+- [x] Initialiser le projet Flutter `cacao_ai_flutter`
+- [x] Configurer `pubspec.yaml` et installer les dépendances
+- [x] Créer l'architecture des dossiers (`core`, `data`, `providers`, `ui`)
+- [x] Configurer le design system et les constantes dans `lib/core/theme/` et `lib/core/constants/`
+- [x] Créer les modèles de données typés (SensorData, Prediction, Message, Tip, DiseaseReport)
+- [x] Implémenter les services :
+  - [x] Client HTTP sécurisé (`api_client.dart`)
+  - [x] Service Supabase (`supabase_service.dart`)
+  - [x] Service Backend API (`backend_api_service.dart`)
+- [x] Implémenter les Providers pour la gestion d'état
+- [x] Développer les écrans de l'application :
+  - [x] Authentification (Connexion, Inscription, Récupération)
+  - [x] Dashboard principal (responsive, raccourcis, météo)
+  - [x] Analyse du sol (jauges de capteurs, graphiques de risque/historique)
+  - [x] Chatbot IA (discussion, statut de génération, gestion des erreurs)
+  - [x] Détection de maladie (caméra/galerie, compression, rapport simulation)
+  - [x] Conseils agricoles (liste des conseils, pull-to-refresh, favoris)
+  - [x] Historique paginé (recherches passées, photos)
+  - [x] Paramètres et Profil
+- [x] Connecter et tester l'application
