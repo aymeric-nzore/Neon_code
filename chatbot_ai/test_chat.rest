@@ -1,6 +1,23 @@
-POST http://127.0.0.1:8000/chat
+### Test du Chatbot Cacao AI (Succès)
+POST http://127.0.0.1:8001/chat
 Content-Type: application/json
 
 {
-  "message": "Mon champ de cacao a des feuilles jaunes, que faire ?"
+  "message": "Bonjour, quels sont les premiers symptômes de la pourriture brune du cacao ?"
+}
+
+### Test du Chatbot (Échec - Message Vide)
+POST http://127.0.0.1:8001/chat
+Content-Type: application/json
+
+{
+  "message": ""
+}
+
+### Test du Chatbot (Échec - Message trop long > 1000 caractères)
+POST http://127.0.0.1:8001/chat
+Content-Type: application/json
+
+{
+  "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sed dictum lorem, sit amet consequat purus. Vestibulum ut lacus eleifend, tristique ex id, tempor erat. Aliquam id libero convallis, molestie turpis quis, tristique odio. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Sed at ante at libero accumsan facilisis. Suspendisse potenti. Nam non nibh vitae mi hendrerit eleifend. Integer tincidunt interdum nibh nec porttitor. Pellentesque tristique nunc lectus. In cursus nisl vitae accumsan sodales. Phasellus eget nunc eget sem interdum aliquet rhoncus ac erat. Pellentesque porta, elit vitae egestas pellentesque, ex sem euismod dui, a sollicitudin elit sapien id dolor. Etiam varius molestie neque sed finibus. Duis et congue arcu, at imperdiet nisi. Praesent tincidunt sem id neque euismod, in laoreet sem dictum. Maecenas bibendum magna metus, ut tincidunt purus eleifend a. Aliquam tincidunt sit amet ante nec pretium. Vivamus quis magna at mi pretium rutrum ut in elit. Pellentesque convallis ante elit. Morbi pellentesque accumsan leo rhoncus."
 }

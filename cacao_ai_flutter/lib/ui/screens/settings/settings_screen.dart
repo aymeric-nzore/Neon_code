@@ -37,8 +37,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: AppTheme.bgCard,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.white.withOpacity(0.04)),
+                borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+                border: Border.all(color: Colors.black.withOpacity(0.03)),
+                boxShadow: AppTheme.softShadow,
               ),
               child: Row(
                 children: [
@@ -74,8 +75,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Container(
               decoration: BoxDecoration(
                 color: AppTheme.bgCard,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.white.withOpacity(0.04)),
+                borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+                border: Border.all(color: Colors.black.withOpacity(0.03)),
+                boxShadow: AppTheme.softShadow,
               ),
               child: Column(
                 children: [
@@ -89,7 +91,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       _showLanguageDialog();
                     },
                   ),
-                  const Divider(color: Colors.white10, height: 1),
+                  const Divider(color: Colors.black12, height: 1),
                   // Push Notifications toggle
                   SwitchListTile(
                     secondary: const Icon(Icons.notifications_active_outlined, color: AppTheme.primaryGreen),
@@ -103,7 +105,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       });
                     },
                   ),
-                  const Divider(color: Colors.white10, height: 1),
+                  const Divider(color: Colors.black12, height: 1),
                   // Email notifications toggle
                   SwitchListTile(
                     secondary: const Icon(Icons.mail_outline, color: AppTheme.primaryGreen),
@@ -127,8 +129,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Container(
               decoration: BoxDecoration(
                 color: AppTheme.bgCard,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.white.withOpacity(0.04)),
+                borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+                border: Border.all(color: Colors.black.withOpacity(0.03)),
+                boxShadow: AppTheme.softShadow,
               ),
               child: Column(
                 children: [
@@ -143,16 +146,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       );
                     },
                   ),
-                  const Divider(color: Colors.white10, height: 1),
+                  const Divider(color: Colors.black12, height: 1),
                   ListTile(
                     leading: const Icon(Icons.info_outline, color: AppTheme.primaryGreen),
-                    title: const Text('À propos de Cacao AI'),
+                    title: const Text('À propos de Azur'),
                     subtitle: const Text('Version 1.0.0', style: TextStyle(fontSize: 12)),
                     trailing: const Icon(Icons.chevron_right, color: AppTheme.textMuted),
                     onTap: () {
                       _showInfoDialog(
-                        'À Propos de Cacao AI',
-                        'Cacao AI est une application d\'aide à la décision agronomique conçue pour aider les producteurs de cacao en Côte d\'Ivoire à anticiper les maladies grâce à l\'intelligence artificielle (FastAPI + PyTorch LSTM).',
+                        'À Propos de Azur',
+                        'Azur est une application d\'aide à la décision agronomique conçue pour aider les producteurs de cacao en Côte d\'Ivoire à anticiper les maladies grâce à l\'intelligence artificielle (FastAPI + PyTorch LSTM).',
                       );
                     },
                   ),

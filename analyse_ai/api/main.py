@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from api.schemas import SensorInput
 
@@ -15,6 +16,15 @@ app = FastAPI(
     title="Cacao AI API",
     version="1.0.0",
     description="API de prédiction des maladies du cacao"
+)
+
+# CORS configuration
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Chargement du modèle une seule fois

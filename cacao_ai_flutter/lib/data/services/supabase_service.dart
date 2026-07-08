@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_constants.dart';
@@ -54,6 +55,10 @@ class SupabaseService {
     return await client.auth.signUp(email: email, password: password);
   }
 
+  Future<AuthResponse> signUpPhone({required String phone, required String password}) async {
+    return await client.auth.signUp(phone: phone, password: password);
+  }
+
   // Auth: Login Email
   Future<AuthResponse> signInEmail({required String email, required String password}) async {
     return await client.auth.signInWithPassword(email: email, password: password);
@@ -69,7 +74,7 @@ class SupabaseService {
     try {
       return await client.auth.signInWithOAuth(
         OAuthProvider.google,
-        redirectTo: 'io.supabase.cacaoai://login-callback/',
+        redirectTo: kIsWeb ? null : 'io.supabase.cacaoai://login-callback/',
       );
     } catch (e) {
       return false;
@@ -81,7 +86,7 @@ class SupabaseService {
     try {
       return await client.auth.signInWithOAuth(
         OAuthProvider.facebook,
-        redirectTo: 'io.supabase.cacaoai://login-callback/',
+        redirectTo: kIsWeb ? null : 'io.supabase.cacaoai://login-callback/',
       );
     } catch (e) {
       return false;

@@ -84,104 +84,122 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
         ],
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            // Error Banner
-            if (chatProvider.errorMessage != null)
-              Container(
-                color: AppTheme.riskCritical.withOpacity(0.2),
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: Row(
-                  children: [
-                    const Icon(Icons.error_outline, color: AppTheme.riskCritical, size: 20),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        chatProvider.errorMessage!,
-                        style: const TextStyle(color: AppTheme.riskCritical, fontSize: 12),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close, size: 16, color: AppTheme.riskCritical),
-                      onPressed: () => chatProvider.restartConversation(), // fallback reset
-                    ),
-                  ],
-                ),
-              ),
-
-            // Message List
-            Expanded(
-              child: ListView.builder(
-                controller: _scrollController,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-                itemCount: chatProvider.messages.length,
-                itemBuilder: (context, index) {
-                  final message = chatProvider.messages[index];
-                  return _buildMessageBubble(message);
-                },
-              ),
-            ),
-
-            // Typing Indicator
-            if (chatProvider.isGenerating)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      backgroundColor: AppTheme.primaryGreen.withOpacity(0.1),
-                      radius: 14,
-                      child: const Icon(Icons.smart_toy_outlined, color: AppTheme.primaryGreen, size: 16),
-                    ),
-                    const SizedBox(width: 12),
-                    const Text(
-                      'AgriIA est en train d\'écrire...',
-                      style: TextStyle(color: AppTheme.textMuted, fontSize: 12, fontStyle: FontStyle.italic),
-                    ),
-                  ],
-                ),
-              ),
-
-            // Send Input Bar
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: const BoxDecoration(
-                color: AppTheme.bgCard,
-                border: Border(top: BorderSide(color: Colors.white10)),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _textController,
-                      style: const TextStyle(color: AppTheme.textLight),
-                      textInputAction: TextInputAction.send,
-                      onSubmitted: (_) => _handleSend(),
-                      decoration: const InputDecoration(
-                        hintText: 'Posez une question...',
-                        fillColor: AppTheme.bgDark,
-                        filled: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(24)),
-                          borderSide: BorderSide.none,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 800),
+            child: Column(
+              children: [
+                // Error Banner
+                if (chatProvider.errorMessage != null)
+                  Container(
+                    color: AppTheme.riskCritical.withOpacity(0.2),
+                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.error_outline, color: AppTheme.riskCritical, size: 20),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            chatProvider.errorMessage!,
+                            style: const TextStyle(color: AppTheme.riskCritical, fontSize: 12),
+                          ),
                         ),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        IconButton(
+                          icon: const Icon(Icons.close, size: 16, color: AppTheme.riskCritical),
+                          onPressed: () => chatProvider.restartConversation(), // fallback reset
+                        ),
+                      ],
+                    ),
+                  ),
+
+                // Message List
+                Expanded(
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                    itemCount: chatProvider.messages.length,
+                    itemBuilder: (context, index) {
+                      final message = chatProvider.messages[index];
+                      return _buildMessageBubble(message);
+                    },
+                  ),
+                ),
+
+                // Typing Indicator
+                if (chatProvider.isGenerating)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: AppTheme.primaryGreen.withOpacity(0.15),
+                          radius: 14,
+                          child: const Icon(Icons.smart_toy_outlined, color: AppTheme.primaryGreen, size: 16),
+                        ),
+                        const SizedBox(width: 12),
+                        const Text(
+                          'AgriIA est en train d\'écrire...',
+                          style: TextStyle(color: AppTheme.textMuted, fontSize: 12, fontStyle: FontStyle.italic),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                // Send Input Bar
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: AppTheme.bgCard,
+                    boxShadow: AppTheme.softShadow,
+                    border: Border(top: BorderSide(color: Colors.black.withOpacity(0.03))),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _textController,
+                          style: const TextStyle(color: AppTheme.textLight),
+                          textInputAction: TextInputAction.send,
+                          onSubmitted: (_) => _handleSend(),
+                          decoration: InputDecoration(
+                            hintText: 'Posez une question...',
+                            fillColor: AppTheme.bgInput,
+                            filled: true,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+                              borderSide: BorderSide.none,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+                              borderSide: BorderSide(color: Colors.black.withOpacity(0.02), width: 1.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+                              borderSide: const BorderSide(color: AppTheme.primaryGreen, width: 1.5),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                          ),
+                        ),
                       ),
-                    ),
+                      const SizedBox(width: 12),
+                      GestureDetector(
+                        onTap: _handleSend,
+                        child: Container(
+                          height: 48,
+                          width: 48,
+                          decoration: const BoxDecoration(
+                            gradient: AppTheme.greenGradient,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.send_rounded, color: Colors.white, size: 18),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 12),
-                  CircleAvatar(
-                    backgroundColor: AppTheme.primaryGreen,
-                    radius: 22,
-                    child: IconButton(
-                      icon: const Icon(Icons.send, color: Colors.white, size: 18),
-                      onPressed: _handleSend,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

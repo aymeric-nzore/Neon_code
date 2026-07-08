@@ -73,18 +73,17 @@ class _SoilAnalysisScreenState extends State<SoilAnalysisScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
-                _buildSimulationInput('Température Air (°C)', _tempController),
+                _buildSimulationInput('Température Air (°C)', _tempController, Icons.thermostat_rounded),
                 const SizedBox(height: 12),
-                _buildSimulationInput('Humidité Air (%)', _humController),
+                _buildSimulationInput('Humidité Air (%)', _humController, Icons.water_drop_outlined),
                 const SizedBox(height: 12),
-                _buildSimulationInput('Précipitations (mm)', _rainController),
+                _buildSimulationInput('Précipitations (mm)', _rainController, Icons.grain_rounded),
                 const SizedBox(height: 12),
-                _buildSimulationInput('Intensité Lumineuse (klux)', _lightController),
+                _buildSimulationInput('Intensité Lumineuse (klux)', _lightController, Icons.wb_sunny_rounded),
                 const SizedBox(height: 12),
-                _buildSimulationInput('Humidité Sol (%)', _soilHumController),
+                _buildSimulationInput('Humidité Sol (%)', _soilHumController, Icons.opacity_rounded),
                 const SizedBox(height: 12),
-                _buildSimulationInput('pH Sol', _phController),
+                _buildSimulationInput('pH Sol', _phController, Icons.science_rounded),
                 const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: () {
@@ -111,15 +110,13 @@ class _SoilAnalysisScreenState extends State<SoilAnalysisScreen> {
     );
   }
 
-  Widget _buildSimulationInput(String label, TextEditingController controller) {
+  Widget _buildSimulationInput(String label, TextEditingController controller, IconData icon) {
     return TextFormField(
       controller: controller,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: const TextStyle(color: AppTheme.textMuted),
-        filled: true,
-        fillColor: AppTheme.bgInput,
+        prefixIcon: Icon(icon, color: AppTheme.textMuted),
       ),
     );
   }
@@ -268,21 +265,21 @@ class _SoilAnalysisScreenState extends State<SoilAnalysisScreen> {
       decoration: BoxDecoration(
         color: AppTheme.bgCard,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.04)),
+        border: Border.all(color: Colors.black.withOpacity(0.05)),
       ),
       child: Column(
         children: [
-          _buildMetricProgressBar('Humidité du sol', data.soilMoisture, '%', 0, 100, Colors.blue),
+          _buildMetricProgressBar('Humidité du sol', data.soilMoisture, '%', 0, 100, AppTheme.primaryBlue),
           const SizedBox(height: 18),
-          _buildMetricProgressBar('Température Air', data.temperatureAir, '°C', 0, 50, Colors.red),
+          _buildMetricProgressBar('Température Air', data.temperatureAir, '°C', 0, 50, AppTheme.primaryOrange),
           const SizedBox(height: 18),
-          _buildMetricProgressBar('pH du sol', data.soilPh, '', 0, 14, Colors.green),
+          _buildMetricProgressBar('pH du sol', data.soilPh, '', 0, 14, AppTheme.primaryGreen),
           const SizedBox(height: 18),
-          _buildMetricProgressBar('Humidité Air', data.humidityAir, '%', 0, 100, Colors.teal),
+          _buildMetricProgressBar('Humidité Air', data.humidityAir, '%', 0, 100, AppTheme.primaryBlue),
           const SizedBox(height: 18),
-          _buildMetricProgressBar('Luminosité', data.lightIntensity, 'klux', 0, 200, Colors.amber),
+          _buildMetricProgressBar('Luminosité', data.lightIntensity, 'klux', 0, 200, AppTheme.primaryYellow),
           const SizedBox(height: 18),
-          _buildMetricProgressBar('Précipitations', data.rainfall, 'mm', 0, 100, Colors.indigo),
+          _buildMetricProgressBar('Précipitations', data.rainfall, 'mm', 0, 100, AppTheme.primaryBlue),
         ],
       ),
     );
@@ -294,8 +291,9 @@ class _SoilAnalysisScreenState extends State<SoilAnalysisScreen> {
       padding: const EdgeInsets.only(top: 24, right: 24, left: 12, bottom: 8),
       decoration: BoxDecoration(
         color: AppTheme.bgCard,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.04)),
+        borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+        border: Border.all(color: Colors.black.withOpacity(0.03)),
+        boxShadow: AppTheme.softShadow,
       ),
       child: LineChart(
         LineChartData(
@@ -364,8 +362,9 @@ class _SoilAnalysisScreenState extends State<SoilAnalysisScreen> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppTheme.bgCard,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.04)),
+        borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+        border: Border.all(color: Colors.black.withOpacity(0.03)),
+        boxShadow: AppTheme.softShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -382,7 +381,7 @@ class _SoilAnalysisScreenState extends State<SoilAnalysisScreen> {
               ),
             ],
           ),
-          const Divider(color: Colors.white12, height: 24),
+          const Divider(color: Colors.black12, height: 24),
           const Text(
             'Actions recommandées :',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppTheme.textLight),
@@ -416,7 +415,9 @@ class _SoilAnalysisScreenState extends State<SoilAnalysisScreen> {
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
         color: AppTheme.bgCard,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+        border: Border.all(color: Colors.black.withOpacity(0.03)),
+        boxShadow: AppTheme.softShadow,
       ),
       child: Column(
         children: [
@@ -464,10 +465,10 @@ class _SoilAnalysisScreenState extends State<SoilAnalysisScreen> {
         ),
         const SizedBox(height: 8),
         ClipRRect(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
           child: LinearProgressIndicator(
             value: percentage,
-            backgroundColor: Colors.white10,
+            backgroundColor: Colors.black.withOpacity(0.05),
             valueColor: AlwaysStoppedAnimation<Color>(color),
             minHeight: 8,
           ),

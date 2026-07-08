@@ -58,6 +58,21 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  // Sign Up Phone
+  Future<bool> signUpPhone(String phone, String password) async {
+    _setLoading(true);
+    _errorMessage = null;
+    try {
+      await _supabaseService.signUpPhone(phone: phone, password: password);
+      _setLoading(false);
+      return true;
+    } catch (e) {
+      _errorMessage = _parseAuthError(e);
+      _setLoading(false);
+      return false;
+    }
+  }
+
   // SSO Login Google
   Future<bool> signInWithGoogle() async {
     _setLoading(true);

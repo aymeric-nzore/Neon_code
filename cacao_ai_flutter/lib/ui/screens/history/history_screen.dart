@@ -113,8 +113,9 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: AppTheme.bgCard,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.white.withOpacity(0.04)),
+            borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+            border: Border.all(color: Colors.black.withOpacity(0.03)),
+            boxShadow: AppTheme.softShadow,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -179,8 +180,9 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: AppTheme.bgCard,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.white.withOpacity(0.04)),
+            borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+            border: Border.all(color: Colors.black.withOpacity(0.03)),
+            boxShadow: AppTheme.softShadow,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -216,13 +218,28 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
 
   Widget _buildEmptyState(String text) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.history_toggle_off, size: 48, color: AppTheme.textMuted),
-          const SizedBox(height: 16),
-          Text(text, style: const TextStyle(color: AppTheme.textMuted, fontSize: 14)),
-        ],
+      child: Container(
+        margin: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(32),
+        decoration: BoxDecoration(
+          color: AppTheme.bgCard,
+          borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+          border: Border.all(color: Colors.black.withOpacity(0.03)),
+          boxShadow: AppTheme.softShadow,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.history_toggle_off_rounded, size: 48, color: AppTheme.primaryGreen),
+            const SizedBox(height: 16),
+            Text(
+              text,
+              style: const TextStyle(color: AppTheme.textLight, fontSize: 14, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }

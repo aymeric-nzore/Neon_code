@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/auth_provider.dart';
+import 'package:lottie/lottie.dart';
 import '../../theme/app_theme.dart';
 import 'register_screen.dart';
 import 'forgot_password_screen.dart';
-import '../dashboard/dashboard_screen.dart';
+import '../main_navigation_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -44,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
   void _navigateToDashboard() {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const DashboardScreen()),
+      MaterialPageRoute(builder: (_) => const MainNavigationScreen()),
     );
   }
 
@@ -84,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [AppTheme.bgDark, Color(0xFF0F1A13)],
+            colors: [Color(0xFFE8F5E9), AppTheme.bgDark],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -105,10 +106,27 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                      // Header Logo
+                      // Header Logo (Animated sprout)
+                      Center(
+                        child: SizedBox(
+                          height: 100,
+                          child: Lottie.network(
+                            'https://assets3.lottiefiles.com/packages/lf20_mbe9mgyb.json',
+                            fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) {
+                              return const Icon(
+                                Icons.eco,
+                                size: 64,
+                                color: AppTheme.primaryGreen,
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
                       const Center(
                         child: Text(
-                          '🌱 CACAO AI',
+                          'AZUR',
                           style: TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
@@ -133,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                       Container(
                         decoration: BoxDecoration(
                           color: AppTheme.bgCard,
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
                         ),
                         child: TabBar(
                           controller: _tabController,
@@ -143,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                           indicatorSize: TabBarIndicatorSize.tab,
                           indicatorPadding: const EdgeInsets.all(4),
                           indicator: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
                             color: AppTheme.bgInput,
                           ),
                           tabs: const [
@@ -156,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
                       // Tab View Content
                       SizedBox(
-                        height: 280,
+                        height: 310,
                         child: TabBarView(
                           controller: _tabController,
                           children: [
@@ -169,8 +187,9 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                     controller: _emailController,
                                     keyboardType: TextInputType.emailAddress,
                                     decoration: const InputDecoration(
-                                      hintText: 'Adresse e-mail',
-                                      prefixIcon: Icon(Icons.mail, color: AppTheme.textMuted),
+                                      labelText: 'Adresse e-mail',
+                                      hintText: 'exemple@domaine.com',
+                                      prefixIcon: Icon(Icons.mail_outline_rounded, color: AppTheme.textMuted),
                                     ),
                                     validator: (val) {
                                       if (val == null || val.isEmpty) return 'Entrez votre e-mail';
@@ -183,11 +202,12 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                     controller: _emailPasswordController,
                                     obscureText: _obscurePassword,
                                     decoration: InputDecoration(
-                                      hintText: 'Mot de passe',
-                                      prefixIcon: const Icon(Icons.lock, color: AppTheme.textMuted),
+                                      labelText: 'Mot de passe',
+                                      hintText: '••••••••',
+                                      prefixIcon: const Icon(Icons.lock_outline_rounded, color: AppTheme.textMuted),
                                       suffixIcon: IconButton(
                                         icon: Icon(
-                                          _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                                          _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
                                           color: AppTheme.textMuted,
                                         ),
                                         onPressed: () {
@@ -225,8 +245,9 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                     controller: _phoneController,
                                     keyboardType: TextInputType.phone,
                                     decoration: const InputDecoration(
-                                      hintText: 'Numéro de téléphone (+225...)',
-                                      prefixIcon: Icon(Icons.phone, color: AppTheme.textMuted),
+                                      labelText: 'Numéro de téléphone',
+                                      hintText: '+225...',
+                                      prefixIcon: Icon(Icons.phone_android_rounded, color: AppTheme.textMuted),
                                     ),
                                     validator: (val) {
                                       if (val == null || val.isEmpty) return 'Entrez votre numéro';
@@ -238,11 +259,12 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                     controller: _phonePasswordController,
                                     obscureText: _obscurePassword,
                                     decoration: InputDecoration(
-                                      hintText: 'Mot de passe',
-                                      prefixIcon: const Icon(Icons.lock, color: AppTheme.textMuted),
+                                      labelText: 'Mot de passe',
+                                      hintText: '••••••••',
+                                      prefixIcon: const Icon(Icons.lock_outline_rounded, color: AppTheme.textMuted),
                                       suffixIcon: IconButton(
                                         icon: Icon(
-                                          _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                                          _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
                                           color: AppTheme.textMuted,
                                         ),
                                         onPressed: () {
@@ -354,6 +376,21 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                             ),
                           ),
                         ],
+                      ),
+                      const SizedBox(height: 24),
+                      Center(
+                        child: TextButton.icon(
+                          onPressed: _navigateToDashboard,
+                          icon: const Icon(Icons.arrow_forward_rounded, color: AppTheme.primaryGreen),
+                          label: const Text(
+                            "Accéder en mode Démo (sans authentification)",
+                            style: TextStyle(
+                              color: AppTheme.primaryGreen,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),

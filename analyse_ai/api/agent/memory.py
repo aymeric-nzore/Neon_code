@@ -20,17 +20,21 @@ class MemoryEngine:
         if timestamp is None:
             timestamp = datetime.now(timezone.utc).isoformat()
 
-        supabase.table("sensor_history").insert({
-            "plantation_id": plantation_id,
-            "timestamp": timestamp,
-            "temperature_air": data["temperature_air"],
-            "humidity_air": data["humidity_air"],
-            "rainfall": data["rainfall"],
-            "light_intensity": data["light_intensity"],
-            "soil_moisture": data["soil_moisture"],
-            "soil_ph": data["soil_ph"],
-            "risk_today": prediction["risk_today"]
-        }).execute()
+        try:
+            return supabase.table("sensor_history").insert({
+                "plantation_id": plantation_id,
+                "timestamp": timestamp,
+                "temperature_air": data["temperature_air"],
+                "humidity_air": data["humidity_air"],
+                "rainfall": data["rainfall"],
+                "light_intensity": data["light_intensity"],
+                "soil_moisture": data["soil_moisture"],
+                "soil_ph": data["soil_ph"],
+                "risk_today": prediction["risk_today"]
+            }).execute()
+        except Exception as e:
+            print(f"[Supabase] Erreur lors de l'enregistrement de l'historique : {e}")
+            return None
 
 
     def get_last_days(self, plantation_id, n=5):

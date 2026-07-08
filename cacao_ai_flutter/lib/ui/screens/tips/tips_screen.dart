@@ -132,16 +132,28 @@ class _TipsScreenState extends State<TipsScreen> with SingleTickerProviderStateM
 
     if (list.isEmpty) {
       return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.lightbulb_outline, size: 48, color: AppTheme.textMuted),
-            const SizedBox(height: 16),
-            Text(
-              emptyMessage ?? 'Aucun conseil disponible pour cette catégorie.',
-              style: const TextStyle(color: AppTheme.textMuted, fontSize: 14),
-            ),
-          ],
+        child: Container(
+          margin: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(32),
+          decoration: BoxDecoration(
+            color: AppTheme.bgCard,
+            borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+            border: Border.all(color: Colors.black.withOpacity(0.03)),
+            boxShadow: AppTheme.softShadow,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.lightbulb_outline_rounded, size: 48, color: AppTheme.primaryGreen),
+              const SizedBox(height: 16),
+              Text(
+                emptyMessage ?? 'Aucun conseil disponible pour cette catégorie.',
+                style: const TextStyle(color: AppTheme.textLight, fontSize: 14, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -167,10 +179,13 @@ class _TipsScreenState extends State<TipsScreen> with SingleTickerProviderStateM
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: AppTheme.bgCard,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.04)),
+        borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+        border: Border.all(color: Colors.black.withOpacity(0.03)),
+        boxShadow: AppTheme.softShadow,
       ),
       child: ExpansionTile(
+        shape: const Border(),
+        collapsedShape: const Border(),
         title: Row(
           children: [
             Container(

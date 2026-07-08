@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import '../lib/data/models/sensor_data.dart';
-import '../lib/data/models/prediction_result.dart';
+import 'package:cacao_ai_flutter/data/models/sensor_data.dart';
+import 'package:cacao_ai_flutter/data/models/prediction_result.dart';
 
 void main() {
   group('Tests des modèles de données Cacao AI', () {

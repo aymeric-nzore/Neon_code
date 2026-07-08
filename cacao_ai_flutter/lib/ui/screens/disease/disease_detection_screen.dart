@@ -133,13 +133,14 @@ class DiseaseDetectionScreen extends StatelessWidget {
     if (provider.selectedImage == null) {
       return InkWell(
         onTap: () => _showImageSourceActionSheet(context),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
         child: Container(
           height: 240,
           decoration: BoxDecoration(
             color: AppTheme.bgCard,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.white10),
+            borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+            border: Border.all(color: Colors.black.withOpacity(0.03)),
+            boxShadow: AppTheme.softShadow,
           ),
           child: const Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -226,8 +227,9 @@ class DiseaseDetectionScreen extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppTheme.bgCard,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.04)),
+        borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+        border: Border.all(color: Colors.black.withOpacity(0.03)),
+        boxShadow: AppTheme.softShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -259,7 +261,7 @@ class DiseaseDetectionScreen extends StatelessWidget {
             provider.report!.description,
             style: const TextStyle(fontSize: 13, height: 1.4, color: AppTheme.textMuted),
           ),
-          const Divider(color: Colors.white12, height: 32),
+          const Divider(color: Colors.black12, height: 32),
           const Text(
             'Traitement recommandé :',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppTheme.textLight),
@@ -321,8 +323,9 @@ class DiseaseDetectionScreen extends StatelessWidget {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: AppTheme.bgCard,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.04)),
+        borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+        border: Border.all(color: Colors.black.withOpacity(0.03)),
+        boxShadow: AppTheme.softShadow,
       ),
       child: const Column(
         children: [

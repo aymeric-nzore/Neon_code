@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 import time
 import requests
 import random
@@ -8,6 +9,8 @@ API_URL = "http://127.0.0.1:8000/predict"
 
 def generate_fake_sensor():
     return {
+        "plantation_id": 1,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "temperature_air": random.uniform(24, 32),
         "humidity_air": random.uniform(60, 95),
         "rainfall": random.uniform(0, 50),

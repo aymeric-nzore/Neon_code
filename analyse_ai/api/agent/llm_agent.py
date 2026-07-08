@@ -109,17 +109,41 @@ class LLMCacaoAgent:
             "temperature": 0.3
         }
 
-        response = httpx.post(
-            self.base_url,
-            headers=headers,
-            json=payload,
-            timeout=30
-        )
+        try:
+            response = httpx.post(
+                self.base_url,
+                headers=headers,
+                json=payload,
+                timeout=30
+            )
 
-        response.raise_for_status()
+            response.raise_for_status()
 
-        data = response.json()
+            data = response.json()
 
-        content = data["choices"][0]["message"]["content"]
-        return safe_json_parse(content)
+            content = data["choices"][0]["message"]["content"]
+            return safe_json_parse(content)
+        except Exception as e:
+            print(f"[Mistral API] Erreur lors de l'appel LLM: {e}")
+            return {
+                "diagnostic": "api_error",
+                "risk_level": "unknown",
+                "risks": {
+                    "today": prediction["risk_today"],
+                    "7d": prediction["risk_7d"],
+                    "14d": prediction["risk_14d"],
+                    "21d": prediction["risk_21d"]
+                },
+                "analysis": {
+                    "error": "L'analyse IA est temporairement indisponible."
+                },
+                "actions": [
+                    "Vérifiez l'historique et les relevés manuellement.",
+                    "Contactez l'assistance si le problème persiste."
+                ],
+                "alert": {
+                    "active": False,
+                    "message": "LLM API request failed"
+                }
+            }
        

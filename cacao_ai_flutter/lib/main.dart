@@ -6,9 +6,11 @@ import 'providers/dashboard_provider.dart';
 import 'providers/chat_provider.dart';
 import 'providers/disease_provider.dart';
 import 'providers/tips_provider.dart';
+import 'providers/alert_provider.dart';
+import 'providers/weather_provider.dart';
 import 'ui/theme/app_theme.dart';
 import 'ui/screens/auth/login_screen.dart';
-import 'ui/screens/dashboard/dashboard_screen.dart';
+import 'ui/screens/main_navigation_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,14 +27,16 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ChatProvider()),
         ChangeNotifierProvider(create: (_) => DiseaseProvider()),
         ChangeNotifierProvider(create: (_) => TipsProvider()),
+        ChangeNotifierProvider(create: (_) => AlertProvider()),
+        ChangeNotifierProvider(create: (_) => WeatherProvider()),
       ],
-      child: const CacaoAIApp(),
+      child: const AzurApp(),
     ),
   );
 }
 
-class CacaoAIApp extends StatelessWidget {
-  const CacaoAIApp({Key? key}) : super(key: key);
+class AzurApp extends StatelessWidget {
+  const AzurApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,11 +45,11 @@ class CacaoAIApp extends StatelessWidget {
     final bool sessionActive = supabaseService.currentUser != null;
 
     return MaterialApp(
-      title: 'Cacao AI',
+      title: 'Azur',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkTheme,
+      theme: AppTheme.lightTheme,
       // If user session is active, go to dashboard, else show login
-      home: sessionActive ? const DashboardScreen() : const LoginScreen(),
+      home: sessionActive ? const MainNavigationScreen() : const LoginScreen(),
     );
   }
 }

@@ -46,7 +46,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [AppTheme.bgDark, Color(0xFF0F1A13)],
+            colors: [Color(0xFFE8F5E9), AppTheme.bgDark],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -87,8 +87,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
-                      hintText: 'Adresse e-mail',
-                      prefixIcon: Icon(Icons.mail, color: AppTheme.textMuted),
+                      labelText: 'Adresse e-mail',
+                      hintText: 'exemple@domaine.com',
+                      prefixIcon: Icon(Icons.mail_outline_rounded, color: AppTheme.textMuted),
                     ),
                     validator: (val) {
                       if (val == null || val.isEmpty) return 'Entrez votre e-mail';

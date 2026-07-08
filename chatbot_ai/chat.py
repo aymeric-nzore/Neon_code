@@ -1,11 +1,13 @@
 import os
 import httpx
-
+from fastapi import HTTPException
 from dotenv import load_dotenv
 
 load_dotenv()
 
 API_KEY = os.getenv("MISTRAL_API_KEY")
+if not API_KEY:
+    raise ValueError("MISTRAL_API_KEY manquante dans .env")
 
 API_URL = "https://api.mistral.ai/v1/chat/completions"
 
@@ -91,16 +93,19 @@ def chat(messages):
         return data["choices"][0]["message"]["content"].strip()
 
     except httpx.HTTPStatusError as e:
-        return f"Erreur API Mistral ({e.response.status_code})."
+        raise HTTPException(
+            status_code=e.response.status_code,
+            detail=f"Erreur API Mistral: {e.response.text}"
+        )
 
     except httpx.RequestError:
-        return (
-            "Impossible de contacter le service IA. "
-            "Vérifiez votre connexion Internet."
+        raise HTTPException(
+            status_code=503,
+            detail="Impossible de contacter le service IA. Vérifiez votre connexion Internet."
         )
 
     except Exception:
-        return (
-            "Le service IA est momentanément indisponible. "
-            "Veuillez réessayer plus tard."
+        raise HTTPException(
+            status_code=500,
+            detail="Le service IA est momentanément indisponible. Veuillez réessayer plus tard."
         )
