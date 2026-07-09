@@ -7,6 +7,7 @@ class DiseaseReport {
   final List<String> tips;
   final List<String> prevention;
   final DateTime date;
+  final double? severityPercent;
 
   DiseaseReport({
     required this.id,
@@ -17,6 +18,7 @@ class DiseaseReport {
     required this.tips,
     required this.prevention,
     required this.date,
+    this.severityPercent,
   });
 
   Map<String, dynamic> toMap() {
@@ -29,6 +31,7 @@ class DiseaseReport {
       'tips': tips,
       'prevention': prevention,
       'date': date.toIso8601String(),
+      'severity_percent': severityPercent,
     };
   }
 
@@ -42,6 +45,7 @@ class DiseaseReport {
       tips: List<String>.from(map['tips'] ?? []),
       prevention: List<String>.from(map['prevention'] ?? []),
       date: map['date'] != null ? DateTime.parse(map['date']) : DateTime.now(),
+      severityPercent: (map['severity_percent'] as num?)?.toDouble(),
     );
   }
 }

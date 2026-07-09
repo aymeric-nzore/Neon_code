@@ -267,6 +267,32 @@ class DiseaseDetectionScreen extends StatelessWidget {
             provider.report!.description,
             style: const TextStyle(fontSize: 13, height: 1.4, color: AppTheme.textMuted),
           ),
+          if (provider.report!.severityPercent != null && provider.report!.severityPercent! > 0) ...[
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Sévérité estimée :',
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.textLight),
+                ),
+                Text(
+                  '${provider.report!.severityPercent!.toStringAsFixed(0)}%',
+                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.orange),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: provider.report!.severityPercent! / 100,
+                color: Colors.orange,
+                backgroundColor: Colors.orange.withOpacity(0.15),
+                minHeight: 8,
+              ),
+            ),
+          ],
           const Divider(color: Colors.black12, height: 32),
           const Text(
             'Traitement recommandé :',

@@ -46,6 +46,8 @@ dependencies:
   salomon_bottom_bar: ^3.3.2
   lottie: ^3.5.1
   geolocator: ^14.0.3
+  tflite_flutter: ^0.11.0
+  camera: ^0.10.5
 
 dev_dependencies:
   flutter_test:
@@ -73,7 +75,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
-    - assets/models/cacao_model.tflite
+    - assets/models/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

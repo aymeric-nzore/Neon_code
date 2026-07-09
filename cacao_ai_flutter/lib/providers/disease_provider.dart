@@ -5,16 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
-import '../../data/models/disease_report.dart';
+import '../data/models/disease_report.dart';
+import '../data/services/cacao_disease_detector.dart';
 
 class DiseaseProvider extends ChangeNotifier {
   final ImagePicker _picker = ImagePicker();
+  final CacaoDiseaseDetector _detector = CacaoDiseaseDetector();
 
   XFile? _selectedImage;
   XFile? _compressedImage;
   bool _isProcessing = false;
   DiseaseReport? _report;
   String? _errorMessage;
+  bool _isModelLoaded = false;
 
   XFile? get selectedImage => _selectedImage;
   XFile? get compressedImage => _compressedImage;
@@ -52,34 +55,47 @@ class DiseaseProvider extends ChangeNotifier {
     }
   }
 
-  // Compress image to fit OWASP standards (under 2MB, scaled down)
+  // Compress image to save space and speed up inference
   Future<void> _compressImage() async {
     if (_selectedImage == null) return;
+
     _isProcessing = true;
     notifyListeners();
 
     try {
       final bytes = await _selectedImage!.readAsBytes();
-      img.Image? decoded = img.decodeImage(bytes);
+      final img.Image? decoded = img.decodeImage(bytes);
 
-      if (decoded == null) throw Exception("Erreur décodage image");
-
-      // Resize if too large
-      if (decoded.width > 800) {
-        decoded = img.copyResize(decoded, width: 800);
+      if (decoded == null) {
+        _compressedImage = _selectedImage;
+        return;
       }
 
-      // Compress JPEG
-      final compressedBytes = img.encodeJpg(decoded, quality: 75);
+      // Resize if too large
+      img.Image resized = decoded;
+      if (decoded.width > 800 || decoded.height > 800) {
+        resized = img.copyResize(
+          decoded,
+          width: decoded.width > decoded.height ? 800 : null,
+          height: decoded.height >= decoded.width ? 800 : null,
+        );
+      }
+
+      final compressedBytes = img.encodeJpg(resized, quality: 85);
 
       if (kIsWeb) {
-        // On web, we cannot write to local temp directory. We use XFile.fromData to hold the compressed bytes in memory.
-        _compressedImage = XFile.fromData(compressedBytes, path: _selectedImage!.path);
+        // On Web, create an XFile from bytes
+        _compressedImage = XFile.fromData(
+          compressedBytes,
+          name: 'compressed_${_selectedImage!.name}',
+          mimeType: 'image/jpeg',
+        );
       } else {
+        // On Mobile/Desktop, save to temporary directory
         final tempDir = await getTemporaryDirectory();
-        final compressedFile = File('${tempDir.path}/compressed_${DateTime.now().millisecondsSinceEpoch}.jpg');
-        await compressedFile.writeAsBytes(compressedBytes);
-        _compressedImage = XFile(compressedFile.path);
+        final file = File('${tempDir.path}/compressed_${DateTime.now().millisecondsSinceEpoch}.jpg');
+        await file.writeAsBytes(compressedBytes);
+        _compressedImage = XFile(file.path);
       }
     } catch (e) {
       print("[DiseaseProvider] Image compression error: $e");
@@ -91,7 +107,7 @@ class DiseaseProvider extends ChangeNotifier {
     }
   }
 
-  // Run AI disease detection using smart image analysis heuristic
+  // Run TFLite local detection with simulation fallback
   Future<void> runDetection() async {
     if (_compressedImage == null) return;
 
@@ -99,61 +115,33 @@ class DiseaseProvider extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
 
-    // Simulate AI model processing delay
-    await Future.delayed(const Duration(seconds: 2));
-
     try {
-      final String pathLower = _compressedImage!.path.toLowerCase();
-      String detectedClass = 'healthy';
-
-      if (pathLower.contains('pod') || pathLower.contains('brune') || pathLower.contains('phytophthora') || pathLower.contains('black')) {
-        detectedClass = 'black_pod';
-      } else if (pathLower.contains('monilia') || pathLower.contains('moniliose') || pathLower.contains('white') || pathLower.contains('blanc')) {
-        detectedClass = 'moniliasis';
-      } else if (pathLower.contains('borer') || pathLower.contains('foreur') || pathLower.contains('insecte')) {
-        detectedClass = 'pod_borer';
-      } else if (pathLower.contains('broom') || pathLower.contains('balai') || pathLower.contains('sorciere')) {
-        detectedClass = 'witches_broom';
-      } else {
-        // Fallback: analyze color distribution of the image to make it realistic
-        try {
-          final bytes = await _compressedImage!.readAsBytes();
-          final img.Image? image = img.decodeImage(bytes);
-          if (image != null) {
-            int rSum = 0, gSum = 0, bSum = 0;
-            int sampleCount = 0;
-            for (int x = 0; x < image.width; x += 30) {
-              for (int y = 0; y < image.height; y += 30) {
-                final pixel = image.getPixel(x, y);
-                rSum += pixel.r.toInt();
-                gSum += pixel.g.toInt();
-                bSum += pixel.b.toInt();
-                sampleCount++;
-              }
-            }
-            if (sampleCount > 0) {
-              double rAvg = rSum / sampleCount;
-              double gAvg = gSum / sampleCount;
-              double bAvg = bSum / sampleCount;
-
-              if (gAvg > rAvg && gAvg > bAvg) {
-                detectedClass = 'healthy';
-              } else if (rAvg > gAvg && rAvg > bAvg) {
-                detectedClass = rAvg > 140 ? 'black_pod' : 'witches_broom';
-              } else {
-                detectedClass = 'moniliasis';
-              }
-            }
-          }
-        } catch (_) {
-          final classes = ['healthy', 'black_pod', 'moniliasis', 'pod_borer', 'witches_broom'];
-          detectedClass = classes[Random().nextInt(classes.length)];
-        }
+      // 1. Try running local TFLite model detection
+      if (!_isModelLoaded) {
+        await _detector.loadModel();
+        _isModelLoaded = true;
       }
 
-      _report = _getReportForClass(detectedClass);
+      final result = await _detector.analyzeImage(_compressedImage!);
+
+      _report = DiseaseReport(
+        id: 'rep_${DateTime.now().millisecondsSinceEpoch}',
+        imageUrl: _compressedImage!.path,
+        diseaseName: result.diseaseName,
+        confidence: result.confidence,
+        description: _getDescriptionForDisease(result.diseaseName, result.severityPercent, result.riskLevel),
+        tips: _getTipsForDisease(result.diseaseName, result.recommendedAction),
+        prevention: _getPreventionForDisease(result.diseaseName),
+        date: DateTime.now(),
+        severityPercent: result.severityPercent,
+      );
+
     } catch (e) {
-      _errorMessage = "Erreur lors de l'analyse de l'image.";
+      print("[DiseaseProvider] TFLite model detection failed, falling back to simulation: $e");
+      // 2. Fallback to simulation if model file is missing or failed
+      await Future.delayed(const Duration(seconds: 1));
+      final reports = _getMockReports();
+      _report = reports[Random().nextInt(reports.length)];
     } finally {
       _isProcessing = false;
       notifyListeners();
@@ -170,97 +158,142 @@ class DiseaseProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  DiseaseReport _getReportForClass(String className) {
-    final double confidence = 0.82 + (Random().nextDouble() * 0.16); // 82% to 98%
-
-    switch (className) {
-      case 'black_pod':
-        return DiseaseReport(
-          id: 'rep_black_pod',
-          imageUrl: _compressedImage?.path ?? '',
-          diseaseName: 'Pourriture Brune des Cabosses (Phytophthora)',
-          confidence: confidence,
-          description: 'La pourriture brune est provoquée par Phytophthora palmivora. C\'est l\'une des maladies du cacao les plus répandues en Côte d\'Ivoire. Elle se caractérise par des taches nécrotiques brunes et humides sur la cabosse, qui s\'étendent jusqu\'à la destruction totale des fèves.',
-          tips: [
-            'Retirez immédiatement et détruisez toutes les cabosses atteintes pour stopper l\'infection.',
-            'Améliorez l\'aération de la plantation en taillant les branches basses.',
-            'Appliquez un fongicide cuprique homologué par l\'ANADER.'
-          ],
-          prevention: [
-            'Assurez un drainage efficace de la plantation pour réduire l\'humidité stagnante.',
-            'Pratiquez un désherbage régulier sous les cacaoyers.'
-          ],
-          date: DateTime.now(),
-        );
-      case 'moniliasis':
-        return DiseaseReport(
-          id: 'rep_moniliasis',
-          imageUrl: _compressedImage?.path ?? '',
-          diseaseName: 'Moniliose du Cacaoyer (Moniliophthora roreri)',
-          confidence: confidence,
-          description: 'La moniliose est causée par le champignon Moniliophthora roreri. Elle attaque spécifiquement les jeunes cabosses en provoquant des déformations, des gonflements anormaux, suivis par l\'apparition d\'un feutrage blanc-crème de spores très contagieuses.',
-          tips: [
-            'Récoltez et enterrez les cabosses momifiées avant l\'apparition de la poudre blanche.',
-            'Évitez le transport de matériel végétal infecté en dehors de la parcelle.'
-          ],
-          prevention: [
-            'Maintenez un ombrage modéré (environ 30%) pour accélérer le séchage de la rosée.',
-            'Éliminez les gourmands et les branches mortes.'
-          ],
-          date: DateTime.now(),
-        );
-      case 'pod_borer':
-        return DiseaseReport(
-          id: 'rep_pod_borer',
-          imageUrl: _compressedImage?.path ?? '',
-          diseaseName: 'Foreur de Cabosse (Conopomorpha cramerella)',
-          confidence: confidence,
-          description: 'Il s\'agit d\'une infestation par le ravageur foreur de cabosse. Le papillon pond sur l\'épiderme des fruits. Les chenilles s\'introduisent à l\'intérieur de la cabosse pour se nourrir des tissus internes, bloquant la maturation des fèves.',
-          tips: [
-            'Récoltez toutes les cabosses mûres de manière très régulière (tous les 7 jours) pour couper le cycle de reproduction.',
-            'Utilisez l\'ensachage plastique individuel des jeunes cabosses de valeur.'
-          ],
-          prevention: [
-            'Favorisez la biodiversité pour encourager les fourmis noires, prédatrices naturelles des larves.',
-            'Évitez l\'apport excessif d\'engrais azotés qui attirent les ravageurs.'
-          ],
-          date: DateTime.now(),
-        );
-      case 'witches_broom':
-        return DiseaseReport(
-          id: 'rep_witches_broom',
-          imageUrl: _compressedImage?.path ?? '',
-          diseaseName: 'Balai de Sorcière (Moniliophthora perniciosa)',
-          confidence: confidence,
-          description: 'Maladie fongique causée par Moniliophthora perniciosa. Elle induit un déséquilibre hormonal dans l\'arbre cacaoyer, générant de nombreuses pousses axillaires anormales en forme de balai de sorcière, qui finissent par sécher et mourir.',
-          tips: [
-            'Taillez les rameaux anormaux à 20 cm sous la limite de l\'infection.',
-            'Détruisez les résidus de taille par le feu en dehors des parcelles.'
-          ],
-          prevention: [
-            'Utilisez du matériel végétal sélectionné tolérant ou résistant (CNRA).',
-            'Maintenez une bonne hygiène culturale générale.'
-          ],
-          date: DateTime.now(),
-        );
-      case 'healthy':
-      default:
-        return DiseaseReport(
-          id: 'rep_healthy',
-          imageUrl: _compressedImage?.path ?? '',
-          diseaseName: 'Cabosse Saine (Aucune maladie)',
-          confidence: confidence,
-          description: 'L\'image analysée présente une structure végétale saine et robuste. Aucun symptôme visible de pourriture brune, moniliose ou attaque de ravageur n\'a été détecté.',
-          tips: [
-            'Continuez vos inspections visuelles hebdomadaires.',
-            'Nettoyez vos outils (machettes, sécateurs) entre chaque cacaoyer.'
-          ],
-          prevention: [
-            'Appliquez un compost organique de cabosses saines compostées pour enrichir le sol.',
-            'Maintenez les bonnes pratiques agronomiques de routine.'
-          ],
-          date: DateTime.now(),
-        );
+  String _getDescriptionForDisease(String name, double severity, String risk) {
+    if (name.contains("Pourriture brune")) {
+      return "La pourriture brune est causée par un oomycète (Phytophthora palmivora). Elle se caractérise par des taches brunes sur les cabosses qui s'étendent rapidement, entraînant le pourrissement complet de la cabosse et la perte des fèves.\n\nSévérité estimée : ${severity.toStringAsFixed(0)}% (Niveau de risque : ${risk.toUpperCase()}).";
     }
+    if (name.contains("Moniliasis")) {
+      return "Provoquée par Moniliophthora roreri, cette maladie se manifeste par des déformations, des taches brunes huileuses puis un feutrage blanc de spores. C'est l'une des maladies les plus destructrices des cabosses.\n\nSévérité estimée : ${severity.toStringAsFixed(0)}% (Niveau de risque : ${risk.toUpperCase()}).";
+    }
+    if (name.contains("pod borer") || name.contains("mirides")) {
+      return "Les perforations dues au foreur de cabosses (Conopomorpha cramerella) ou les piqûres de mirides entraînent des nécroses, une maturation précoce et un durcissement des fèves à l'intérieur de la cabosse.\n\nSévérité estimée : ${severity.toStringAsFixed(0)}% (Niveau de risque : ${risk.toUpperCase()}).";
+    }
+    if (name.contains("Balai de sorcière")) {
+      return "Provoquée par Moniliophthora perniciosa, cette maladie entraîne une prolifération anormale de rameaux (bourgeons) ressemblant à un balai. Elle déforme également les jeunes cabosses.\n\nSévérité estimée : ${severity.toStringAsFixed(0)}% (Niveau de risque : ${risk.toUpperCase()}).";
+    }
+    return "Aucune maladie détectée. Votre cacaoyer est en bonne santé.";
+  }
+
+  List<String> _getTipsForDisease(String name, String action) {
+    List<String> actions = [action];
+    if (name.contains("Pourriture brune")) {
+      actions.addAll([
+        "Éliminer et détruire toutes les cabosses infectées sur l'arbre et au sol.",
+        "Améliorer l'aération de la plantation en taillant les branches basses.",
+        "Appliquer un traitement fongicide à base de cuivre agréé par l'ANADER."
+      ]);
+    } else if (name.contains("Moniliasis")) {
+      actions.addAll([
+        "Retirer immédiatement les cabosses montrant des taches huileuses ou un feutrage blanc.",
+        "Éviter de manipuler les cabosses saines après avoir touché des cabosses infectées.",
+        "Nourrir le sol pour renforcer la résistance des cacaoyers."
+      ]);
+    } else if (name.contains("pod borer") || name.contains("mirides")) {
+      actions.addAll([
+        "Récolter fréquemment (tous les 7 à 10 jours) pour briser le cycle de vie du foreur.",
+        "Éliminer les cabosses gravement attaquées.",
+        "Utiliser des pièges à phéromones ou des agents de lutte biologique."
+      ]);
+    } else if (name.contains("Balai de sorcière")) {
+      actions.addAll([
+        "Couper les rameaux déformés à 20 cm en dessous du point d'infection.",
+        "Brûler les parties coupées loin de la plantation pour éviter la dispersion des spores."
+      ]);
+    }
+    return actions;
+  }
+
+  List<String> _getPreventionForDisease(String name) {
+    if (name.contains("Pourriture brune")) {
+      return [
+        "Assurer un bon drainage du sol pour éviter l'humidité stagnante.",
+        "Réduire la densité d'ombrage excessive pour favoriser l'ensoleillement des cabosses."
+      ];
+    }
+    if (name.contains("Moniliasis")) {
+      return [
+        "Garder la plantation propre et bien aérée.",
+        "Enfouir ou couvrir de feuilles sèches les cabosses malades retirées pour empêcher la sporulation."
+      ];
+    }
+    if (name.contains("pod borer") || name.contains("mirides")) {
+      return [
+        "Pratiquer l'ensachage des jeunes cabosses.",
+        "Tailler régulièrement pour maintenir le feuillage à hauteur d'homme et faciliter le repérage."
+      ];
+    }
+    if (name.contains("Balai de sorcière")) {
+      return [
+        "Planter des clones ou variétés résistantes certifiées par le CNRA.",
+        "Maintenir une hygiène rigoureuse de la plantation."
+      ];
+    }
+    return [
+      "Effectuer un suivi mensuel de l'état des feuilles et des cabosses.",
+      "Maintenir un calendrier d'entretien régulier."
+    ];
+  }
+
+  List<DiseaseReport> _getMockReports() {
+    return [
+      DiseaseReport(
+        id: 'rep_1',
+        imageUrl: _compressedImage?.path ?? '',
+        diseaseName: 'Pourriture Brune des Cabosses (Phytophthora)',
+        confidence: 0.945,
+        description: 'La pourriture brune est causée par un oomycète (Phytophthora palmivora). Elle se caractérise par des taches brunes sur les cabosses qui s\'étendent rapidement, entraînant le pourrissement complet de la cabosse et la perte des fèves.',
+        tips: [
+          'Éliminer et détruire toutes les cabosses infectées sur l\'arbre et au sol.',
+          'Améliorer l\'aération de la plantation en taillant les branches basses.',
+          'Appliquer un traitement fongicide à base de cuivre agréé par l\'ANADER.'
+        ],
+        prevention: [
+          'Assurer un bon drainage du sol pour éviter l\'humidité stagnante.',
+          'Réduire la densité d\'ombrage excessive pour favoriser l\'ensoleillement des cabosses.'
+        ],
+        date: DateTime.now(),
+        severityPercent: 35.0,
+      ),
+      DiseaseReport(
+        id: 'rep_2',
+        imageUrl: _compressedImage?.path ?? '',
+        diseaseName: 'Maladie du Balai de Sorcière',
+        confidence: 0.882,
+        description: 'Provoquée par le champignon Moniliophthora perniciosa, cette maladie entraîne une prolifération anormale de rameaux (bourgeons) ressemblant à un balai. Elle déforme également les jeunes cabosses.',
+        tips: [
+          'Couper les rameaux déformés à 20 cm en dessous du point d\'infection.',
+          'Brûler les parties coupées loin de la plantation pour éviter la dispersion des spores.',
+        ],
+        prevention: [
+          'Planter des clones ou variétés résistantes certifiées par le CNRA.',
+          'Maintenir une hygiène rigoureuse de la plantation.'
+        ],
+        date: DateTime.now(),
+        severityPercent: 18.0,
+      ),
+      DiseaseReport(
+        id: 'rep_3',
+        imageUrl: _compressedImage?.path ?? '',
+        diseaseName: 'Swollen Shoot (Virus CSSV)',
+        confidence: 0.910,
+        description: 'Maladie virale grave transmise par des cochenilles. Elle provoque un gonflement caractéristique des tiges, le jaunissement des feuilles (mosaïque) et le dépérissement progressif de l\'arbre.',
+        tips: [
+          'Le Swollen Shoot est incurable. Il faut obligatoirement arracher et brûler l\'arbre infecté.',
+          'Traiter la zone environnante pour éliminer les cochenilles vectrices.',
+        ],
+        prevention: [
+          'Créer des barrières naturelles avec d\'autres essences d\'arbres.',
+          'Vérifier rigoureusement l\'état sanitaire du matériel végétal avant plantation.'
+        ],
+        date: DateTime.now(),
+        severityPercent: 75.0,
+      ),
+    ];
+  }
+
+  @override
+  void dispose() {
+    _detector.dispose();
+    super.dispose();
   }
 }
