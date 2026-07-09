@@ -119,6 +119,46 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  // Phone Recovery
+  Future<bool> sendPhoneReset(String phone) async {
+    _setLoading(true);
+    _errorMessage = null;
+    try {
+      await _supabaseService.sendPhoneOtpReset(phone);
+      _setLoading(false);
+      return true;
+    } catch (e) {
+      _errorMessage = _parseAuthError(e);
+      _setLoading(false);
+      return false;
+    }
+  }
+
+  // Verify OTP and Reset Password
+  Future<bool> verifyAndResetPassword({
+    required String contact,
+    required String token,
+    required String newPassword,
+    required bool isEmail,
+  }) async {
+    _setLoading(true);
+    _errorMessage = null;
+    try {
+      await _supabaseService.verifyAndResetPassword(
+        contact: contact,
+        token: token,
+        newPassword: newPassword,
+        isEmail: isEmail,
+      );
+      _setLoading(false);
+      return true;
+    } catch (e) {
+      _errorMessage = _parseAuthError(e);
+      _setLoading(false);
+      return false;
+    }
+  }
+
   void clearErrors() {
     _errorMessage = null;
     notifyListeners();

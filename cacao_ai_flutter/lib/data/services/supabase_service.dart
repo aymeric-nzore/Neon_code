@@ -111,6 +111,39 @@ class SupabaseService {
     await client.auth.resetPasswordForEmail(email);
   }
 
+  // Auth: Reset Password (Phone OTP)
+  Future<void> sendPhoneOtpReset(String phone) async {
+    await client.auth.signInWithOtp(
+      phone: phone,
+      shouldCreateUser: false,
+    );
+  }
+
+  // Auth: Verify OTP and update password
+  Future<void> verifyAndResetPassword({
+    required String contact,
+    required String token,
+    required String newPassword,
+    required bool isEmail,
+  }) async {
+    if (isEmail) {
+      await client.auth.verifyOTP(
+        email: contact,
+        token: token,
+        type: OtpType.recovery,
+      );
+    } else {
+      await client.auth.verifyOTP(
+        phone: contact,
+        token: token,
+        type: OtpType.sms,
+      );
+    }
+    await client.auth.updateUser(
+      UserAttributes(password: newPassword),
+    );
+  }
+
   // Database: Fetch Sensor History
   Future<List<Map<String, dynamic>>> fetchSensorHistory(int plantationId) async {
     try {
