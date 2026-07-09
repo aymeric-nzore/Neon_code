@@ -1,0 +1,244 @@
+INFO:     Will watch for changes in these directories: ['/home/aymeric/Documents/Neon_code/analyse_ai']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [11257] using WatchFiles
+/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/sklearn/base.py:525: InconsistentVersionWarning: Trying to unpickle estimator MinMaxScaler from version 1.6.1 when using version 1.9.0. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+INFO:     Started server process [11263]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:48156 - "OPTIONS /predict HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48160 - "POST /predict HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 422, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/fastapi/applications.py", line 1163, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2683, in app
+    await route.handle(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1266, in handle
+    await super().handle(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 150, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 136, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 690, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 346, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/anyio/to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2596, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 1029, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/api/main.py", line 68, in predict
+    agent_result = agent.run(
+                   ^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/api/agent/agent.py", line 32, in run
+    ai_report = self.llm.generate_report(
+                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/api/agent/llm_agent.py", line 70, in generate_report
+    "risks": {
+             ^
+ValueError: Invalid format specifier ' float,
+                "7d": float,
+                "14d": float,
+                "21d": float
+            ' for object of type 'str'
+INFO:     127.0.0.1:48156 - "POST /predict HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 422, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/fastapi/applications.py", line 1163, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2683, in app
+    await route.handle(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1266, in handle
+    await super().handle(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 150, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 136, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 690, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 346, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/anyio/to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2596, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 1029, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/api/main.py", line 68, in predict
+    agent_result = agent.run(
+                   ^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/api/agent/agent.py", line 32, in run
+    ai_report = self.llm.generate_report(
+                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/api/agent/llm_agent.py", line 70, in generate_report
+    "risks": {
+             ^
+ValueError: Invalid format specifier ' float,
+                "7d": float,
+                "14d": float,
+                "21d": float
+            ' for object of type 'str'
+INFO:     127.0.0.1:32982 - "POST /predict HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 422, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/fastapi/applications.py", line 1163, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2683, in app
+    await route.handle(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1266, in handle
+    await super().handle(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 150, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 136, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 690, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 346, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/starlette/concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/anyio/to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2596, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 1029, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/api/main.py", line 68, in predict
+    agent_result = agent.run(
+                   ^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/api/agent/agent.py", line 32, in run
+    ai_report = self.llm.generate_report(
+                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aymeric/Documents/Neon_code/analyse_ai/api/agent/llm_agent.py", line 70, in generate_report
+    "risks": {
+             ^
+ValueError: Invalid format specifier ' float,
+                "7d": float,
+                "14d": float,
+                "21d": float
+            ' for object of type 'str'

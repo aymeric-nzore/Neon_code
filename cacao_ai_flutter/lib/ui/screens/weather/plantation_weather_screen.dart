@@ -112,9 +112,9 @@ class PlantationWeatherScreen extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'San Pedro, Côte d\'Ivoire',
-                    style: TextStyle(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500),
+                  Text(
+                    weather.locationName,
+                    style: const TextStyle(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(height: 4),
                   Text(

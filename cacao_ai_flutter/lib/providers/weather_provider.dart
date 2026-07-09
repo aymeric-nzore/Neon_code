@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import '../data/models/weather_data.dart';
 import '../data/repositories/weather_repository.dart';
 
@@ -14,8 +15,38 @@ class WeatherProvider extends ChangeNotifier {
   WeatherData? get weatherData => _weatherData;
 
   WeatherProvider() {
-    // Automatically load weather for San Pedro, Côte d'Ivoire (default plantation coordinates)
-    fetchWeather();
+    fetchWeatherWithCurrentLocation();
+  }
+
+  Future<Position?> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    try {
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        return null;
+      }
+
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          return null;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        return null;
+      }
+
+      return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.low,
+        timeLimit: const Duration(seconds: 5),
+      );
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<void> fetchWeather({double latitude = 4.75, double longitude = -6.64}) async {
@@ -32,6 +63,24 @@ class WeatherProvider extends ChangeNotifier {
       _errorMessage = 'Impossible de charger les données météo.';
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<void> fetchWeatherWithCurrentLocation() async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final position = await _determinePosition();
+      if (position != null) {
+        await fetchWeather(latitude: position.latitude, longitude: position.longitude);
+      } else {
+        // Fallback to default coordinates (San Pedro)
+        await fetchWeather(latitude: 4.75, longitude: -6.64);
+      }
+    } catch (e) {
+      await fetchWeather(latitude: 4.75, longitude: -6.64);
     }
   }
 }

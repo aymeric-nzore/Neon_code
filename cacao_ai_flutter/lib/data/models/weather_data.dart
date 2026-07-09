@@ -6,6 +6,7 @@ class WeatherData {
   final String descriptionCurrent;
   final List<DailyForecast> dailyForecasts;
   final String agriculturalImpact;
+  final String locationName; // Resolved name of the location
 
   WeatherData({
     required this.temperatureCurrent,
@@ -15,6 +16,7 @@ class WeatherData {
     required this.descriptionCurrent,
     required this.dailyForecasts,
     required this.agriculturalImpact,
+    required this.locationName,
   });
 
   factory WeatherData.fromMock() {
@@ -32,6 +34,7 @@ class WeatherData {
         DailyForecast(date: DateTime.now().add(const Duration(days: 4)), tempMin: 23.0, tempMax: 31.0, rainProb: 40.0, description: 'Averses', iconCode: 'rain'),
       ],
       agriculturalImpact: 'Les conditions chaudes et très humides (humidité > 80% et probabilité de pluie élevée) créent un microclimat idéal pour l\'incubation et la libération de spores de la pourriture brune (Phytophthora). Évitez les traitements foliaires aujourd\'hui car le lessivage est probable.',
+      locationName: 'San Pedro, Côte d\'Ivoire',
     );
   }
 }

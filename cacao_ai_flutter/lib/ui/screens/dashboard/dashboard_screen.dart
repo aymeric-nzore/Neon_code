@@ -501,13 +501,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
               children: [
                 Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: const [
+                  children: [
                     Text(
-                      'San Pedro, Côte d\'Ivoire',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.textLight),
+                      weather?.locationName ?? 'San Pedro, Côte d\'Ivoire',
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.textLight),
                     ),
-                    SizedBox(width: 4),
-                    Icon(Icons.open_in_new, size: 10, color: AppTheme.textMuted),
+                    const SizedBox(width: 4),
+                    const Icon(Icons.open_in_new, size: 10, color: AppTheme.textMuted),
                   ],
                 ),
                 Text(
