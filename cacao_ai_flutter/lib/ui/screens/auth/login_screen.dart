@@ -59,6 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
       success = await auth.signUp(
         _emailController.text.trim(),
         _emailPasswordController.text,
+        _usernameController.text.trim(),
       );
     } else {
       success = await auth.signInEmail(
@@ -84,6 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
       success = await auth.signUpPhone(
         fullPhone,
         _phonePasswordController.text,
+        _usernameController.text.trim(),
       );
     } else {
       success = await auth.signInPhone(

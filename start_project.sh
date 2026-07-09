@@ -49,19 +49,22 @@ setup_python_env() {
   
   if [ ! -d ".venv" ]; then
     echo -e "   - Création de l'environnement virtuel (.venv)..."
-    python3 -m venv .venv
+    python3 -m venv .venv || python3 -m virtualenv .venv
   fi
   
-  # Activation du venv pour installer les dépendances
-  source .venv/bin/activate
-  echo -e "   - Installation / mise à jour des packages depuis requirements.txt..."
-  pip install --upgrade pip
-  if [ -f "requirements.txt" ]; then
-    pip install -r requirements.txt
+  # Utiliser directement le binaire python du venv pour installer les packages
+  if [ -f ".venv/bin/python" ]; then
+    echo -e "   - Installation / mise à jour des packages dans le venv..."
+    .venv/bin/python -m pip install --upgrade pip 2>/dev/null || true
+    if [ -f "requirements.txt" ]; then
+      .venv/bin/python -m pip install -r requirements.txt || \
+      .venv/bin/python -m pip install -r requirements.txt --break-system-packages || \
+      pip install -r requirements.txt --break-system-packages
+    fi
   else
-    echo -e "${RED}   - [ATTENTION] Aucun fichier requirements.txt trouvé dans $folder_path.${NC}"
+    echo -e "${YELLOW}   - Pas de venv trouvé, installation globale avec --break-system-packages...${NC}"
+    pip install -r requirements.txt --break-system-packages || pip3 install -r requirements.txt --break-system-packages
   fi
-  deactivate
   cd ..
 }
 
@@ -86,28 +89,33 @@ echo -e "\n${GREEN}✅ Toutes les dépendances sont prêtes !${NC}"
 # 1. Lancement de l'API d'analyse et prédiction (Port 8000)
 echo -e "\n${YELLOW}1. Démarrage de l'API de prédiction (analyse_ai) sur le port 8000...${NC}"
 cd "/home/aymeric/Documents/Neon_code/analyse_ai" || exit 1
-source .venv/bin/activate
-uvicorn api.main:app --port 8000 --reload > uvicorn_analyse.log 2>&1 &
+if [ -f ".venv/bin/uvicorn" ]; then
+  .venv/bin/uvicorn api.main:app --port 8000 --reload > uvicorn_analyse.log 2>&1 &
+else
+  uvicorn api.main:app --port 8000 --reload > uvicorn_analyse.log 2>&1 &
+fi
 PREDICT_PID=$!
 PIDS+=($PREDICT_PID)
-deactivate
 echo -e "${GREEN}   - API de prédiction démarrée (PID: $PREDICT_PID) | Logs -> analyse_ai/uvicorn_analyse.log${NC}"
 
 # 2. Lancement du Chatbot AI (Port 8001)
 echo -e "\n${YELLOW}2. Démarrage du Chatbot AI (chatbot_ai) sur le port 8001...${NC}"
 cd "/home/aymeric/Documents/Neon_code/chatbot_ai" || exit 1
-source .venv/bin/activate
-uvicorn app:app --port 8001 --reload > uvicorn_chatbot.log 2>&1 &
+if [ -f ".venv/bin/uvicorn" ]; then
+  .venv/bin/uvicorn app:app --port 8001 --reload > uvicorn_chatbot.log 2>&1 &
+else
+  uvicorn app:app --port 8001 --reload > uvicorn_chatbot.log 2>&1 &
+fi
 CHATBOT_PID=$!
 PIDS+=($CHATBOT_PID)
-deactivate
 echo -e "${GREEN}   - Chatbot AI démarré (PID: $CHATBOT_PID) | Logs -> chatbot_ai/uvicorn_chatbot.log${NC}"
 
 # Laisser un peu de temps d'init aux APIs
 sleep 2
 
-# 3. Lancement du frontend Flutter (Port 8080)
-echo -e "\n${YELLOW}3. Démarrage du Frontend Flutter (cacao_ai_flutter) sur le port 8080...${NC}"
+# 3. Lancement du frontend Flutter
+echo -e "\n${YELLOW}3. Démarrage du Frontend Flutter (cacao_ai_flutter)...${NC}"
 echo -e "${YELLOW}   (Le terminal interactif Flutter va se lancer ci-dessous)${NC}\n"
 cd "/home/aymeric/Documents/Neon_code/cacao_ai_flutter" || exit 1
-flutter run -d web-server --web-port 8080
+# Démarre sur le périphérique disponible par défaut (Android/Linux/etc.)
+flutter run

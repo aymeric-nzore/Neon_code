@@ -1,6 +1,11 @@
 INFO:     Will watch for changes in these directories: ['/home/aymeric/Documents/Neon_code/chatbot_ai']
 INFO:     Uvicorn running on http://127.0.0.1:8001 (Press CTRL+C to quit)
-INFO:     Started reloader process [11260] using StatReload
-INFO:     Started server process [11267]
+INFO:     Started reloader process [3432] using StatReload
+INFO:     Started server process [3527]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [3527]
+INFO:     Stopping reloader process [3432]
