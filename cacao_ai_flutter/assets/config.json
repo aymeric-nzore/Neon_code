@@ -1,6 +1,6 @@
 {
   "supabase_url": "https://zfvigcbjropsiglvkhkf.supabase.co",
   "supabase_anon_key": "sb_publishable_3honTckvl3YvwNLBvpSsBQ_t7aRIKfQ",
-  "predict_api_url": "http://127.0.0.1:8000",
-  "chat_api_url": "http://127.0.0.1:8001"
+  "predict_api_url": "https://neon-code-tcg7.onrender.com",
+  "chat_api_url": "https://neon-chatbot.onrender.com"
 }
