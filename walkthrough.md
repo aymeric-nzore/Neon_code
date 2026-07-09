@@ -25,6 +25,12 @@ Ce document présente le résumé des fonctionnalités, de l'architecture et des
   - Adaptation de toutes les bordures et diviseurs pour utiliser des teintes sombres translucides (`Colors.black12`, `Colors.black.withOpacity(0.05)`) assurant leur visibilité sur fond blanc.
   - Utilisation de la police Outfit avec des niveaux de gris foncés pour le texte principal (`textLight` = `#111827`).
 
+### 3. Classification locale hors-ligne (TensorFlow Lite)
+- **Modèle TFLite local :** Intégration du service `CacaoDiseaseDetector` (`lib/data/services/cacao_disease_detector.dart`) pour classifier hors-ligne 5 classes de cabosses de cacao (`healthy`, `black_pod`, `moniliasis`, `pod_borer`, `witches_broom`) à l'aide du modèle TFLite.
+- **Estimation de sévérité :** Intégration de l'algorithme d'estimation de sévérité par colorimétrie et affichage d'une jauge de sévérité responsive (`LinearProgressIndicator` orange) sous le rapport de diagnostic.
+- **Résilience (Fallback) :** Gestion gracieuse des erreurs dans le `DiseaseProvider` (comme l'absence physique du fichier de modèle `.tflite` non encore téléchargé) en affichant un avertissement propre et en basculant automatiquement sur la simulation pour permettre le test de l'application.
+- **Pipeline d'entraînement :** Création du dossier `training/` à la racine contenant les scripts Colab d'entraînement du modèle IA (`01_prepare_data.py`, `02_train_model.py`, `03_export_tflite.py`).
+
 ---
 
 ## 🧪 Validation & Tests
