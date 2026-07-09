@@ -87,7 +87,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final dashboardProvider = Provider.of<DashboardProvider>(context);
     final weatherProvider = Provider.of<WeatherProvider>(context);
 
-    final String username = authProvider.userEmail.split('@').first;
+    final String username = authProvider.userName;
     final String lastSync = dashboardProvider.lastSyncTime != null
         ? DateFormat('dd/MM/yyyy HH:mm').format(dashboardProvider.lastSyncTime!)
         : 'Jamais';

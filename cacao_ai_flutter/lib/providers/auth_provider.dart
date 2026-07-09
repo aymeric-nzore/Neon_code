@@ -12,6 +12,7 @@ class AuthProvider extends ChangeNotifier {
   bool get isAuthenticated => _supabaseService.currentUser != null;
   String get userEmail => _supabaseService.currentUser?.email ?? 'Producteur';
   String get userPhone => _supabaseService.currentUser?.phone ?? '';
+  String get userName => _supabaseService.currentUser?.userMetadata?['username'] ?? 'Producteur';
 
   // Sign In Email
   Future<bool> signInEmail(String email, String password) async {
@@ -44,11 +45,11 @@ class AuthProvider extends ChangeNotifier {
   }
 
   // Sign Up Email
-  Future<bool> signUp(String email, String password) async {
+  Future<bool> signUp(String email, String password, String username) async {
     _setLoading(true);
     _errorMessage = null;
     try {
-      await _supabaseService.signUpEmail(email: email, password: password);
+      await _supabaseService.signUpEmail(email: email, password: password, username: username);
       _setLoading(false);
       return true;
     } catch (e) {
@@ -59,11 +60,11 @@ class AuthProvider extends ChangeNotifier {
   }
 
   // Sign Up Phone
-  Future<bool> signUpPhone(String phone, String password) async {
+  Future<bool> signUpPhone(String phone, String password, String username) async {
     _setLoading(true);
     _errorMessage = null;
     try {
-      await _supabaseService.signUpPhone(phone: phone, password: password);
+      await _supabaseService.signUpPhone(phone: phone, password: password, username: username);
       _setLoading(false);
       return true;
     } catch (e) {

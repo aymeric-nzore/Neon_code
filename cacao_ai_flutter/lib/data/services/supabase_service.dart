@@ -51,12 +51,20 @@ class SupabaseService {
   }
 
   // Auth: Register
-  Future<AuthResponse> signUpEmail({required String email, required String password}) async {
-    return await client.auth.signUp(email: email, password: password);
+  Future<AuthResponse> signUpEmail({required String email, required String password, required String username}) async {
+    return await client.auth.signUp(
+      email: email,
+      password: password,
+      data: {'username': username},
+    );
   }
 
-  Future<AuthResponse> signUpPhone({required String phone, required String password}) async {
-    return await client.auth.signUp(phone: phone, password: password);
+  Future<AuthResponse> signUpPhone({required String phone, required String password, required String username}) async {
+    return await client.auth.signUp(
+      phone: phone,
+      password: password,
+      data: {'username': username},
+    );
   }
 
   // Auth: Login Email

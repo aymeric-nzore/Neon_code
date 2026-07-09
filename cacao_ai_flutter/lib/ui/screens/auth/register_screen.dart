@@ -48,6 +48,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final success = await auth.signUp(
       _emailController.text.trim(),
       _emailPasswordController.text,
+      _usernameController.text.trim(),
     );
 
     if (success && mounted) {
@@ -71,6 +72,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final success = await auth.signUpPhone(
       fullPhone,
       _phonePasswordController.text,
+      _usernameController.text.trim(),
     );
 
     if (success && mounted) {

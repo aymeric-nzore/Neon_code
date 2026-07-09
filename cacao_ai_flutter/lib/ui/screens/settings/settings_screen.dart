@@ -54,12 +54,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          email.split('@').first.toUpperCase(),
+                          authProvider.userName,
                           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.textLight),
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          email,
+                          authProvider.userEmail.contains('@') ? authProvider.userEmail : authProvider.userPhone,
                           style: const TextStyle(color: AppTheme.textMuted, fontSize: 13),
                         ),
                       ],
