@@ -39,9 +39,17 @@ agent = CacaoRiskAgent(model)
 # ==========================================================
 
 @app.get("/")
-def health():
+def index():
     return {
         "status": "online",
+        "model_loaded": True
+    }
+
+
+@app.get("/health")
+def health():
+    return {
+        "status": "healthy",
         "model_loaded": True
     }
 

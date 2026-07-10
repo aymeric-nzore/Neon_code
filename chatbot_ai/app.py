@@ -17,7 +17,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+@app.get("/")
+def index():
+    return {
+        "status": "online"
+    }
 
+
+@app.get("/health")
+def health():
+    return {
+        "status": "healthy"
+    }
 
 class ChatRequest(BaseModel):
     message: str = Field(..., min_length=1, max_length=1000, description="Le message envoyé par l'utilisateur")
