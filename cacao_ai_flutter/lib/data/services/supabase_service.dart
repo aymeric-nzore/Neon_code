@@ -82,7 +82,7 @@ class SupabaseService {
     try {
       return await client.auth.signInWithOAuth(
         OAuthProvider.google,
-        redirectTo: kIsWeb ? null : 'io.supabase.cacaoai://login-callback/',
+        redirectTo: kIsWeb ? Uri.base.toString() : 'io.supabase.cacaoai://login-callback/',
       );
     } catch (e) {
       return false;
@@ -94,7 +94,7 @@ class SupabaseService {
     try {
       return await client.auth.signInWithOAuth(
         OAuthProvider.facebook,
-        redirectTo: kIsWeb ? null : 'io.supabase.cacaoai://login-callback/',
+        redirectTo: kIsWeb ? Uri.base.toString() : 'io.supabase.cacaoai://login-callback/',
       );
     } catch (e) {
       return false;
