@@ -148,6 +148,21 @@ class DiseaseProvider extends ChangeNotifier {
     }
   }
 
+  // Run a simulated demo detection using a pre-defined demo image
+  Future<void> runDemoDetection() async {
+    _selectedImage = XFile('https://images.unsplash.com/photo-1610632380989-680fe40816c6?w=600');
+    _compressedImage = _selectedImage;
+    _isProcessing = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    await Future.delayed(const Duration(milliseconds: 1500));
+    final reports = _getMockReports();
+    _report = reports[Random().nextInt(reports.length)];
+    _isProcessing = false;
+    notifyListeners();
+  }
+
   // Clean up
   void reset() {
     _selectedImage = null;

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "888363249168",
+    "project_id": "neoncode-40059",
+    "storage_bucket": "neoncode-40059.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:888363249168:android:8be9f066578d7cd73c6495",
+        "android_client_info": {
+          "package_name": "com.example.cacao_ai_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDncex1g2UaXjM8vibfEUXsD2oBNqmQg2g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

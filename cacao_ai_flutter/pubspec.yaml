@@ -48,6 +48,7 @@ dependencies:
   geolocator: ^14.0.3
   tflite_flutter: ^0.11.0
   camera: ^0.10.5
+  firebase_core: ^4.11.0
 
 dev_dependencies:
   flutter_test:

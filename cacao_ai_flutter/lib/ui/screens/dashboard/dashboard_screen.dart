@@ -45,7 +45,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Provider.of<AlertProvider>(context, listen: false).generateAlertsFromData(riskToday, soilMoisture, rainfall);
         }
       });
-      Provider.of<WeatherProvider>(context, listen: false).fetchWeather();
+      Provider.of<WeatherProvider>(context, listen: false).fetchWeatherWithCurrentLocation();
     });
   }
 
@@ -191,7 +191,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: RefreshIndicator(
           onRefresh: () async {
             await dashboardProvider.fetchLatestFromDatabase();
-            await weatherProvider.fetchWeather();
+            await weatherProvider.fetchWeatherWithCurrentLocation();
             if (mounted) {
               final double rToday = dashboardProvider.latestPrediction?.prediction.riskToday ?? 0.0;
               final double sMoisture = dashboardProvider.currentData.soilMoisture;

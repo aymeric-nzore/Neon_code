@@ -132,34 +132,50 @@ class DiseaseDetectionScreen extends StatelessWidget {
 
   Widget _buildImagePreviewArea(BuildContext context, DiseaseProvider provider) {
     if (provider.selectedImage == null) {
-      return InkWell(
-        onTap: () => _showImageSourceActionSheet(context),
-        borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
-        child: Container(
-          height: 240,
-          decoration: BoxDecoration(
-            color: AppTheme.bgCard,
+      return Column(
+        children: [
+          InkWell(
+            onTap: () => _showImageSourceActionSheet(context),
             borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
-            border: Border.all(color: Colors.black.withOpacity(0.03)),
-            boxShadow: AppTheme.softShadow,
-          ),
-          child: const Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.add_a_photo_outlined, size: 64, color: AppTheme.primaryGreen),
-              SizedBox(height: 16),
-              Text(
-                'Prendre ou importer une photo',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.textLight),
+            child: Container(
+              height: 240,
+              decoration: BoxDecoration(
+                color: AppTheme.bgCard,
+                borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+                border: Border.all(color: Colors.black.withOpacity(0.03)),
+                boxShadow: AppTheme.softShadow,
               ),
-              SizedBox(height: 8),
-              Text(
-                'Scan de feuille ou cabosse infectée',
-                style: TextStyle(color: AppTheme.textMuted, fontSize: 13),
+              child: const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.add_a_photo_outlined, size: 64, color: AppTheme.primaryGreen),
+                  SizedBox(height: 16),
+                  Text(
+                    'Prendre ou importer une photo',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.textLight),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Scan de feuille ou cabosse infectée',
+                    style: TextStyle(color: AppTheme.textMuted, fontSize: 13),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+          const SizedBox(height: 16),
+          OutlinedButton.icon(
+            onPressed: () => provider.runDemoDetection(),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppTheme.primaryGreen,
+              side: const BorderSide(color: AppTheme.primaryGreen),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            icon: const Icon(Icons.play_circle_outline),
+            label: const Text('Tester l\'IA (Mode Démo)'),
+          ),
+        ],
       );
     }
 
@@ -168,7 +184,7 @@ class DiseaseDetectionScreen extends StatelessWidget {
       child: Container(
         height: 240,
         color: AppTheme.bgCard,
-        child: kIsWeb
+        child: (kIsWeb || provider.selectedImage!.path.startsWith('http'))
             ? Image.network(
                 provider.selectedImage!.path,
                 fit: BoxFit.cover,

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import '../data/models/weather_data.dart';
@@ -23,9 +24,11 @@ class WeatherProvider extends ChangeNotifier {
     LocationPermission permission;
 
     try {
-      serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        return null;
+      if (!kIsWeb) {
+        serviceEnabled = await Geolocator.isLocationServiceEnabled();
+        if (!serviceEnabled) {
+          return null;
+        }
       }
 
       permission = await Geolocator.checkPermission();
