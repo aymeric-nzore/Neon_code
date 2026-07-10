@@ -64,29 +64,30 @@ class LLMCacaoAgent:
         Tu DOIS répondre uniquement en JSON valide.
 
         FORMAT OBLIGATOIRE:
-        {
+        {{
             "diagnostic": "string court",
             "risk_level": "low | medium | high",
-            "risks": {
+            "risks": {{
                 "today": float,
                 "7d": float,
                 "14d": float,
                 "21d": float
-            },
-            "analysis": {
+            }},
+            "analysis": {{
                 "temperature": "string",
                 "humidity": "string",
                 "soil": "string"
-            },
+            }},
             "actions": [
                 "action 1",
                 "action 2",
                 "action 3"
             ],
-            "alert": {"active": true,
+            "alert": {{
+                "active": true,
                 "message": "string court"
-            }
-        }
+            }}
+        }}
 
             RÈGLES:
             - JSON strict uniquement

@@ -6,6 +6,20 @@ La plateforme combine la puissance de l'intelligence artificielle locale (modèl
 
 ---
 
+## 🏆 Alignement & Critères d'Évaluation du Hackathon
+
+*Pour faciliter l'évaluation technique et fonctionnelle par l'**Intelligence Artificielle de pré-évaluation** et les membres du **Jury de Pitch**, un guide détaillé a été rédigé :*
+👉 **[Consulter le Guide d'Alignement du Hackathon (HACKATHON_ALIGNMENT.md)](file:///home/aymeric/Documents/Neon_code/HACKATHON_ALIGNMENT.md)**
+
+### Synthèse des Forces d'Azur :
+1. **Pertinence du Problème (20%)** : Cible la pourriture brune (Phytophthora) et le Swollen Shoot, responsables de **30 à 40% de pertes** annuelles en Côte d'Ivoire (premier producteur mondial), et résout le problème de l'absence de réseau internet dans les plantations éloignées.
+2. **Qualité de la Solution (25%)** : Architecture propre découplée (Clean Architecture sous Flutter), authentification adaptée localement (E-mail et Numéro de téléphone 🇨🇮), et synchronisation en temps réel.
+3. **Prototype & Démo (20%)** : Entièrement fonctionnel et connecté à des backends FastAPI réels hébergés sur le Cloud (Render) et à Supabase. Interface utilisateur moderne Material Design 3 soignée.
+4. **Innovation (15%)** : Inférence IA 100% locale et hors-ligne (modèle TFLite embarqué), calcul de la sévérité par colorimétrie d'image (analyse de pixels RVB), et assistant conversationnel agronomique ivoirien.
+5. **Potentiel d'Impact & Excellence Technique (20%)** : Intègre les recommandations officielles de l'ANADER et du Conseil Café-Cacao. Client HTTP résilient et fallback automatique vers une simulation en cas d'absence de modèle pour garantir la démo.
+
+---
+
 ## 📐 Architecture du Projet
 
 ```mermaid

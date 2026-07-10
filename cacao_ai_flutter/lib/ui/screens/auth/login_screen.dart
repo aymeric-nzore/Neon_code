@@ -491,36 +491,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 12),
-
-                  OutlinedButton(
-                    onPressed: authProvider.isLoading ? null : () async {
-                      final success = await authProvider.signInWithFacebook();
-                      if (success && mounted) _navigateToDashboard();
-                    },
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      side: const BorderSide(color: Colors.black87, width: 1.0),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      foregroundColor: AppTheme.textLight,
-                    ),
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: const Padding(
-                            padding: EdgeInsets.only(left: 16.0),
-                            child: Icon(Icons.facebook, size: 22, color: Color(0xFF1877F2)),
-                          ),
-                        ),
-                        const Text(
-                          "Continuer avec Facebook",
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
                   const SizedBox(height: 32),
 
                   // Toggle Login/SignUp mode
