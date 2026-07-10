@@ -12,7 +12,10 @@ class AuthProvider extends ChangeNotifier {
   bool get isAuthenticated => _supabaseService.currentUser != null;
   String get userEmail => _supabaseService.currentUser?.email ?? 'Producteur';
   String get userPhone => _supabaseService.currentUser?.phone ?? '';
-  String get userName => _supabaseService.currentUser?.userMetadata?['username'] ?? 'Producteur';
+  String get userName => _supabaseService.currentUser?.userMetadata?['username'] ??
+                         _supabaseService.currentUser?.userMetadata?['full_name'] ??
+                         _supabaseService.currentUser?.userMetadata?['name'] ??
+                         'Producteur';
 
   // Sign In Email
   Future<bool> signInEmail(String email, String password) async {
@@ -96,6 +99,21 @@ class AuthProvider extends ChangeNotifier {
     }
     _setLoading(false);
     return success;
+  }
+
+  // Update Username
+  Future<bool> updateUsername(String newUsername) async {
+    _setLoading(true);
+    _errorMessage = null;
+    try {
+      await _supabaseService.updateUsername(newUsername);
+      _setLoading(false);
+      return true;
+    } catch (e) {
+      _errorMessage = _parseAuthError(e);
+      _setLoading(false);
+      return false;
+    }
   }
 
   // Sign Out

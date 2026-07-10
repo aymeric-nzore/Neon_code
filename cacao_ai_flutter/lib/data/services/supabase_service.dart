@@ -101,6 +101,13 @@ class SupabaseService {
     }
   }
 
+  // Auth: Update Username
+  Future<UserResponse> updateUsername(String newUsername) async {
+    return await client.auth.updateUser(
+      UserAttributes(data: {'username': newUsername}),
+    );
+  }
+
   // Auth: SignOut
   Future<void> signOut() async {
     await client.auth.signOut();

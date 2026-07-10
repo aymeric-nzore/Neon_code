@@ -45,5 +45,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Cette application nécessite l'accès à la caméra pour vous permettre de scanner et diagnostiquer les maladies des cabosses de cacao en temps réel.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Cette application nécessite l'accès à votre galerie photo pour vous permettre de charger et diagnostiquer des images de vos cacaoyers.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Cette application nécessite l'accès à votre position pour récupérer les prévisions météo locales précises pour votre plantation de cacao.</string>
 </dict>
 </plist>

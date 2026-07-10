@@ -7,6 +7,7 @@ import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
 import '../data/models/disease_report.dart';
 import '../data/services/cacao_disease_detector.dart';
+import '../utils/permissions/web_permissions_helper.dart';
 
 class DiseaseProvider extends ChangeNotifier {
   final ImagePicker _picker = ImagePicker();
@@ -18,12 +19,38 @@ class DiseaseProvider extends ChangeNotifier {
   DiseaseReport? _report;
   String? _errorMessage;
   bool _isModelLoaded = false;
+  bool _hasCameraPermission = false;
 
   XFile? get selectedImage => _selectedImage;
   XFile? get compressedImage => _compressedImage;
   bool get isProcessing => _isProcessing;
   DiseaseReport? get report => _report;
   String? get errorMessage => _errorMessage;
+  bool get hasCameraPermission => _hasCameraPermission;
+
+  DiseaseProvider() {
+    checkCameraPermission();
+  }
+
+  Future<void> checkCameraPermission() async {
+    if (kIsWeb) {
+      _hasCameraPermission = await WebPermissionsHelper.isCameraPermissionGranted();
+      notifyListeners();
+    } else {
+      _hasCameraPermission = true;
+    }
+  }
+
+  Future<bool> requestCameraPermission() async {
+    if (kIsWeb) {
+      final granted = await WebPermissionsHelper.requestCameraPermission();
+      _hasCameraPermission = granted;
+      notifyListeners();
+      return granted;
+    }
+    _hasCameraPermission = true;
+    return true;
+  }
 
   // Pick image from gallery or camera
   Future<bool> selectImage(ImageSource source) async {
@@ -32,6 +59,15 @@ class DiseaseProvider extends ChangeNotifier {
     _selectedImage = null;
     _compressedImage = null;
     notifyListeners();
+
+    if (kIsWeb && source == ImageSource.camera) {
+      final hasPermission = await requestCameraPermission();
+      if (!hasPermission) {
+        _errorMessage = "Accès à la caméra refusé. Veuillez l'activer dans les paramètres du navigateur pour scanner les cabosses.";
+        notifyListeners();
+        return false;
+      }
+    }
 
     try {
       final XFile? file = await _picker.pickImage(

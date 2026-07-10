@@ -54,9 +54,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          authProvider.userName,
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.textLight),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                authProvider.userName,
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.textLight),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.edit_outlined, size: 18, color: AppTheme.primaryGreen),
+                              onPressed: () => _showEditUsernameDialog(context, authProvider),
+                              constraints: const BoxConstraints(),
+                              padding: EdgeInsets.zero,
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 4),
                         Text(
@@ -240,6 +253,107 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showEditUsernameDialog(BuildContext context, AuthProvider authProvider) {
+    final controller = TextEditingController(text: authProvider.userName);
+    final formKey = GlobalKey<FormState>();
+    bool isSaving = false;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              backgroundColor: AppTheme.bgCard,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              title: const Text(
+                'Modifier le nom d\'utilisateur',
+                style: TextStyle(color: AppTheme.textLight, fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              content: Form(
+                key: formKey,
+                child: TextFormField(
+                  controller: controller,
+                  style: const TextStyle(color: AppTheme.textLight, fontSize: 15),
+                  decoration: InputDecoration(
+                    labelText: 'Nom d\'utilisateur',
+                    labelStyle: const TextStyle(color: AppTheme.textMuted, fontSize: 12),
+                    hintText: 'Ex: Amadou',
+                    filled: true,
+                    fillColor: Colors.black.withOpacity(0.03),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: Colors.black12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: AppTheme.primaryGreen),
+                    ),
+                  ),
+                  validator: (val) {
+                    if (val == null || val.trim().isEmpty) {
+                      return 'Le nom d\'utilisateur ne peut pas être vide';
+                    }
+                    if (val.trim().length < 3) {
+                      return 'Le nom doit contenir au moins 3 caractères';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: isSaving ? null : () => Navigator.pop(context),
+                  child: const Text('Annuler', style: TextStyle(color: AppTheme.textMuted)),
+                ),
+                ElevatedButton(
+                  onPressed: isSaving
+                      ? null
+                      : () async {
+                          if (!formKey.currentState!.validate()) return;
+                          
+                          setDialogState(() {
+                            isSaving = true;
+                          });
+
+                          final success = await authProvider.updateUsername(controller.text.trim());
+
+                          if (mounted) {
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(success
+                                    ? 'Nom d\'utilisateur mis à jour avec succès !'
+                                    : 'Erreur lors de la mise à jour.'),
+                                backgroundColor: success ? AppTheme.primaryGreen : AppTheme.riskCritical,
+                              ),
+                            );
+                          }
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primaryGreen,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: isSaving
+                      ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                        )
+                      : const Text('Enregistrer', style: TextStyle(color: Colors.white)),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 

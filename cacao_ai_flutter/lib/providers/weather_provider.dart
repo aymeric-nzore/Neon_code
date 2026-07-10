@@ -10,13 +10,35 @@ class WeatherProvider extends ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
   WeatherData? _weatherData;
+  LocationPermission _locationPermission = LocationPermission.unableToDetermine;
 
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   WeatherData? get weatherData => _weatherData;
+  LocationPermission get locationPermission => _locationPermission;
 
   WeatherProvider() {
-    fetchWeatherWithCurrentLocation();
+    initLocationAndWeather();
+  }
+
+  Future<void> initLocationAndWeather() async {
+    if (kIsWeb) {
+      try {
+        final permission = await Geolocator.checkPermission();
+        _locationPermission = permission;
+        notifyListeners();
+        if (permission == LocationPermission.whileInUse || permission == LocationPermission.always) {
+          await fetchWeatherWithCurrentLocation();
+        } else {
+          // Fallback to default (San Pedro) without pop-up on start
+          await fetchWeather(latitude: 4.75, longitude: -6.64);
+        }
+      } catch (_) {
+        await fetchWeather(latitude: 4.75, longitude: -6.64);
+      }
+    } else {
+      await fetchWeatherWithCurrentLocation();
+    }
   }
 
   Future<Position?> _determinePosition() async {
@@ -32,8 +54,13 @@ class WeatherProvider extends ChangeNotifier {
       }
 
       permission = await Geolocator.checkPermission();
+      _locationPermission = permission;
+      notifyListeners();
+
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
+        _locationPermission = permission;
+        notifyListeners();
         if (permission == LocationPermission.denied) {
           return null;
         }

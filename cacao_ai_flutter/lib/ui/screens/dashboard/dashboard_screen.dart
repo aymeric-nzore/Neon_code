@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:geolocator/geolocator.dart';
 import '../../../providers/auth_provider.dart';
 import '../../../providers/dashboard_provider.dart';
 import '../../../providers/alert_provider.dart';
 import '../../../providers/weather_provider.dart';
+import '../../../providers/disease_provider.dart';
 import '../../theme/app_theme.dart';
 import '../soil/soil_analysis_screen.dart';
 import '../chat/chatbot_screen.dart';
@@ -86,6 +89,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final authProvider = Provider.of<AuthProvider>(context);
     final dashboardProvider = Provider.of<DashboardProvider>(context);
     final weatherProvider = Provider.of<WeatherProvider>(context);
+    final diseaseProvider = Provider.of<DiseaseProvider>(context);
 
     final String username = authProvider.userName;
     final String lastSync = dashboardProvider.lastSyncTime != null
@@ -235,6 +239,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ],
                     ),
                     const SizedBox(height: 24),
+
+                    if (kIsWeb) ...[
+                      _buildWebPermissionsBanner(context, weatherProvider, diseaseProvider),
+                      const SizedBox(height: 16),
+                    ],
 
                     // Health Score Card (SaaS Agricultural Dashboard)
                     _buildHealthScoreCard(riskToday),
@@ -644,6 +653,87 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildWebPermissionsBanner(
+    BuildContext context,
+    WeatherProvider weatherProv,
+    DiseaseProvider diseaseProv,
+  ) {
+    final bool needsLocation = weatherProv.locationPermission != LocationPermission.whileInUse &&
+        weatherProv.locationPermission != LocationPermission.always;
+    final bool needsCamera = !diseaseProv.hasCameraPermission;
+
+    if (!needsLocation && !needsCamera) return const SizedBox.shrink();
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppTheme.bgCard,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+        border: Border.all(color: AppTheme.primaryGreen.withOpacity(0.2)),
+        boxShadow: AppTheme.softShadow,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.settings_suggest_outlined, color: AppTheme.primaryGreen, size: 24),
+              const SizedBox(width: 8),
+              const Expanded(
+                child: Text(
+                  'Configuration Web requise',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                    color: AppTheme.textLight,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Pour profiter pleinement d\'Azur sur le Web, veuillez autoriser les accès matériels requis par le navigateur.',
+            style: TextStyle(fontSize: 12, color: AppTheme.textMuted),
+          ),
+          const SizedBox(height: 14),
+          Wrap(
+            spacing: 12,
+            runSpacing: 8,
+            children: [
+              if (needsLocation)
+                ElevatedButton.icon(
+                  onPressed: () => weatherProv.fetchWeatherWithCurrentLocation(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primaryGreen.withOpacity(0.1),
+                    foregroundColor: AppTheme.primaryGreen,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  ),
+                  icon: const Icon(Icons.my_location, size: 16),
+                  label: const Text('Autoriser la localisation', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                ),
+              if (needsCamera)
+                ElevatedButton.icon(
+                  onPressed: () => diseaseProv.requestCameraPermission(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primaryOrange.withOpacity(0.1),
+                    foregroundColor: AppTheme.primaryOrange,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  ),
+                  icon: const Icon(Icons.camera_alt_outlined, size: 16),
+                  label: const Text('Autoriser la caméra', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                ),
+            ],
+          ),
+        ],
       ),
     );
   }
