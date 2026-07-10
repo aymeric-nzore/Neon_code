@@ -297,6 +297,24 @@ class _SoilAnalysisScreenState extends State<SoilAnalysisScreen> {
       ),
       child: LineChart(
         LineChartData(
+          lineTouchData: LineTouchData(
+            touchTooltipData: LineTouchTooltipData(
+              getTooltipColor: (touchedSpot) => AppTheme.primaryGreen.withOpacity(0.95),
+              tooltipRoundedRadius: 8,
+              getTooltipItems: (List<LineBarSpot> touchedSpots) {
+                return touchedSpots.map((LineBarSpot touchedSpot) {
+                  return LineTooltipItem(
+                    '${(touchedSpot.y * 100).toInt()}%',
+                    const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  );
+                }).toList();
+              },
+            ),
+          ),
           gridData: const FlGridData(show: false),
           titlesData: FlTitlesData(
             rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
